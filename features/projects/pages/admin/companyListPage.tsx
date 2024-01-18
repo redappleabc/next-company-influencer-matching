@@ -2,85 +2,94 @@
 
 import Checkbox from "@/components/atoms/checkbox";
 import SearchBar from "@/components/organisms/searchbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import axios from "axios";
 
 export default function CompanyListPage() {
-  const [active, setActive] = useState(null);
+  const [active, setActive] = useState(-1);
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await axios.get("api/company");
+      console.log(res);
+    };
 
-  const onItemClick = ({ idx }: { idx: Number }) => {
+    fetchData();
+  }, []);
+  const onItemClick = ({ idx }: { idx: number }) => {
     if (active === idx) {
-      setActive(null);
+      setActive(-1);
     } else {
       setActive(idx);
     }
   };
-  const data = [
-    {
-      companyName: "株式会社ABC",
-      personName: "山田 太郎",
-      condition: "稼働中",
-      settlement: "未登録",
-      freeAccount: false,
-      date: "2023/01/01",
-    },
-    {
-      companyName: "株式会社ABC",
-      personName: "山田 太郎",
-      condition: "稼働中",
-      settlement: "未登録",
-      freeAccount: true,
-      date: "2023/01/01",
-    },
-    {
-      companyName: "株式会社ABC",
-      personName: "山田 太郎",
-      condition: "稼働中",
-      settlement: "",
-      freeAccount: false,
-      date: "2023/01/01",
-    },
-    {
-      companyName: "株式会社ABC",
-      personName: "山田 太郎",
-      condition: "稼働中",
-      settlement: "未登録",
-      freeAccount: true,
-      date: "2023/01/01",
-    },
-    {
-      companyName: "株式会社ABC",
-      personName: "山田 太郎",
-      condition: "稼働中",
-      settlement: "未登録",
-      freeAccount: true,
-      date: "2023/01/01",
-    },
-    {
-      companyName: "株式会社ABC",
-      personName: "山田 太郎",
-      condition: "稼働中",
-      settlement: "未登録",
-      freeAccount: true,
-      date: "2023/01/01",
-    },
-    {
-      companyName: "株式会社ABC",
-      personName: "山田 太郎",
-      condition: "稼働中",
-      settlement: "未登録",
-      freeAccount: "",
-      date: "2023/01/01",
-    },
-    {
-      companyName: "株式会社ABC",
-      personName: "山田 太郎",
-      condition: "稼働中",
-      settlement: "",
-      freeAccount: "",
-      date: "2023/01/01",
-    },
-  ];
+  // const data = [
+  //   {
+  //     companyName: "株式会社ABC",
+  //     personName: "山田 太郎",
+  //     condition: "稼働中",
+  //     settlement: "未登録",
+  //     freeAccount: false,
+  //     date: "2023/01/01",
+  //   },
+  //   {
+  //     companyName: "株式会社ABC",
+  //     personName: "山田 太郎",
+  //     condition: "稼働中",
+  //     settlement: "未登録",
+  //     freeAccount: true,
+  //     date: "2023/01/01",
+  //   },
+  //   {
+  //     companyName: "株式会社ABC",
+  //     personName: "山田 太郎",
+  //     condition: "稼働中",
+  //     settlement: "",
+  //     freeAccount: false,
+  //     date: "2023/01/01",
+  //   },
+  //   {
+  //     companyName: "株式会社ABC",
+  //     personName: "山田 太郎",
+  //     condition: "稼働中",
+  //     settlement: "未登録",
+  //     freeAccount: true,
+  //     date: "2023/01/01",
+  //   },
+  //   {
+  //     companyName: "株式会社ABC",
+  //     personName: "山田 太郎",
+  //     condition: "稼働中",
+  //     settlement: "未登録",
+  //     freeAccount: true,
+  //     date: "2023/01/01",
+  //   },
+  //   {
+  //     companyName: "株式会社ABC",
+  //     personName: "山田 太郎",
+  //     condition: "稼働中",
+  //     settlement: "未登録",
+  //     freeAccount: true,
+  //     date: "2023/01/01",
+  //   },
+  //   {
+  //     companyName: "株式会社ABC",
+  //     personName: "山田 太郎",
+  //     condition: "稼働中",
+  //     settlement: "未登録",
+  //     freeAccount: "",
+  //     date: "2023/01/01",
+  //   },
+  //   {
+  //     companyName: "株式会社ABC",
+  //     personName: "山田 太郎",
+  //     condition: "稼働中",
+  //     settlement: "",
+  //     freeAccount: "",
+  //     date: "2023/01/01",
+  //   },
+  // ];
   return (
     <div>
       <div className="px-[30px] sp:px-[12px] pt-[110px] pb-[30px]">

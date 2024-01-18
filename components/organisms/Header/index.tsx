@@ -22,13 +22,15 @@ const Header: React.FC<Headerprops> = ({ mode }: Headerprops) => {
             <span className="sp:hidden">お問い合わせ</span>
           </button>
         </Link>
-        <button className="h-[37px] bg-[#FF2929] text-white py-[10px] px-[30px] sp:px-[10px] justify-center flex items-center rounded-[30px] mr-[70px] sp:mr-[10px]">
-          <img
-            src="/img/brand.svg"
-            className="w-[15px] mr-[10px] sp:mr-[0px]"
-          />
-          <span className="sp:hidden">お申し込み</span>
-        </button>
+        <Link href={"applyCompany"}>
+          <button className="h-[37px] bg-[#FF2929] text-white py-[10px] px-[30px] sp:px-[10px] justify-center flex items-center rounded-[30px] mr-[70px] sp:mr-[10px]">
+            <img
+              src="/img/brand.svg"
+              className="w-[15px] mr-[10px] sp:mr-[0px]"
+            />
+            <span className="sp:hidden">お申し込み</span>
+          </button>
+        </Link>
       </div>
     </div>
   ) : (

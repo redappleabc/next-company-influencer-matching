@@ -1,3 +1,4 @@
+"use client";
 import Input from "@/components/atoms/input";
 import Checkbox from "@/components/atoms/checkbox";
 import Button from "@/components/atoms/button";

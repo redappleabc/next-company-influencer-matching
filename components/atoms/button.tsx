@@ -1,3 +1,4 @@
+"use client";
 import React, { Children } from "react";
 import { ReactNode } from "react";
 
@@ -5,6 +6,7 @@ export interface ButtonProps {
   buttonClassName?: string;
   buttonType: ButtonType;
   children: ReactNode;
+  handleClick?: () => void;
 }
 export enum ButtonType {
   PRIMARY,
@@ -24,9 +26,13 @@ const Button: React.FC<ButtonProps> = ({
   buttonClassName = "",
   buttonType = ButtonType.PRIMARY,
   children,
+  handleClick,
 }: ButtonProps) => {
   return (
-    <button className={classNames[buttonType] + buttonClassName}>
+    <button
+      onClick={handleClick}
+      className={classNames[buttonType] + buttonClassName}
+    >
       {children}
     </button>
   );

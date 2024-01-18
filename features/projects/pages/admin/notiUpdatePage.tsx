@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Button, { ButtonType } from "@/components/atoms/button";
 import TextArea from "@/components/atoms/textarea";
