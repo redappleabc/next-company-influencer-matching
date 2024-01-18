@@ -11,6 +11,7 @@ export interface ButtonProps {
 }
 export enum ButtonType {
   PRIMARY,
+  PRIMARYDEFAULT,
   DANGER,
   DEFAULT,
   ROUNDED,
@@ -18,6 +19,7 @@ export enum ButtonType {
 }
 const classNames = [
   "px-[20px] py-[10px] rounded-[5px] text-[white] bg-[#3F8DEB] ",
+  "px-[20px] py-[10px] rounded-[5px] text-[white] bg-[#A9A9A9] ",
   "px-[20px] py-[10px] rounded-[5px] text-[white] bg-[#EE5736] ",
   "px-[15px] py-[7px] bg-[#A9A9A9] text-[white] ",
   "p-[15px] py-[7px] bg-[#3F8DEB] text-[white] rounded-[50%] ",

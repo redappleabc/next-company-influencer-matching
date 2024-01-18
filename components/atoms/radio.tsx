@@ -1,11 +1,12 @@
 import { title } from "process";
-import React from "react";
+import React, { useState } from "react";
 import { ReactNode } from "react";
 
 export interface RadioProps {
   radioClassName?: string;
   options?: string[];
   title?: string;
+  handleChange?: (val: string) => void;
 }
 
 const classNames = [
@@ -16,26 +17,21 @@ const classNames = [
 const RadioBtn: React.FC<RadioProps> = ({
   radioClassName,
   options,
+  handleChange,
 }: RadioProps) => {
   return (
-    // <span className={"flex sp:text-sp items-center " + radioClassName}>
-    //   {prefix && (
-    //     <span className="mr-[11px] sp:text-sp text-[#A8A8A8]">{prefix}</span>
-    //   )}
-    //   <input
-    //     type="radio"
-    //     className="w-[18px]  sp:text-sp mr-[10px] h-[18px] border border-[#D3D3D3]"
-    //   ></input>
-    //   <span className="sp:text-sp">{title}</span>
-    // </span>
     <div className="flex">
       {options?.map((aOption, idx) => (
         <div key={idx} className="flex items-center mr-[10px]">
           <input
             type="radio"
+            defaultChecked={aOption === options[0]}
             className="w-[20px] h-[20px]"
             name={title}
             value={aOption}
+            onChange={(e) => {
+              handleChange(e.target.value);
+            }}
           />
            <span>{aOption}</span>
         </div>

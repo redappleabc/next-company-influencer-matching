@@ -22,7 +22,7 @@ export default function CompanySidebar() {
       </div>
       <div className="pt-[20px] pb-[30px]">
         <div className="p-[12px] text-[14px]">
-          <Link href={"/pdfdoonload"}>マニュアル</Link>
+          <Link href={"/pdfdownload"}>マニュアル</Link>
         </div>
         <div className="p-[12px] text-[14px]">
           <Link href={"/ask"}>運営へのお問い合わせ</Link>

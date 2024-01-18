@@ -27,7 +27,7 @@ const Header: React.FC<Headerprops> = ({ mode }: Headerprops) => {
             <span className="sp:hidden">お問い合わせ</span>
           </button>
         </Link>
-        <Link href={"apply"}>
+        <Link href={"/apply"}>
           <button className="h-[37px] bg-[#FF2929] text-white py-[10px] px-[30px] sp:px-[10px] justify-center flex items-center rounded-[30px] mr-[70px] sp:mr-[10px]">
             <img
               src="/img/brand.svg"

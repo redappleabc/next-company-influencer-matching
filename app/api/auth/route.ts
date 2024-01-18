@@ -38,21 +38,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: error });
   }
 }
-export default async function PUT(request: NextRequest) {
-  const body = await request.json();
-  return NextResponse.json({ type: "success", data: body });
-
-  // connection.query(
-  //     `
-  //   INSERT INTO users (email,password,name ,role)
-  //   VALUES ('test@gmail.com','12345','管理者' ,'admin')
-  //   `,
-  //     (error, result) => {
-  //       if (error) {
-  //         console.error("Error creating admin:", error);
-  //         return;
-  //       }
-  //       console.log("Admin created successfully.");
-  //     }
-  //   );
-}

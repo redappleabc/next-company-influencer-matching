@@ -12,7 +12,7 @@ export default function CompanyListPage() {
   useEffect(() => {
     const fetchData = async () => {
       const res = await axios.get("api/company");
-      setData(res.data);
+      if (res.data?.type !== "error") setData(res.data);
     };
 
     fetchData();
@@ -90,7 +90,7 @@ export default function CompanyListPage() {
             {data.map((aData, idx) => (
               <tr key={idx}>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3] hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
-                  <Link href={"/company"}>{aData.companyName}</Link>
+                  <Link href={`/company/${aData.id}`}>{aData.companyName}</Link>
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3] ">
                   {aData.responsibleName}
@@ -102,7 +102,7 @@ export default function CompanyListPage() {
                   {aData.payment}
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3]">
-                  {aData.freeAccount && "無料アカウント"}
+                  {aData.freeAccount ? "無料アカウント" : ""}
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3] ">
                   {aData.date}

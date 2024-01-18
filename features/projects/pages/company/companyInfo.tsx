@@ -28,7 +28,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
       setError("");
     }
 
-    const res = await axios.post(`api/company/`, data);
+    const res = await axios.post(`api/company`, data);
     if (res.data.type === "success") {
       router.push("/applyConfirm");
     }
