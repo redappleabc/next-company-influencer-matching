@@ -20,6 +20,7 @@ connection.connect(async (error) => {
       id INT AUTO_INCREMENT PRIMARY KEY,
       email VARCHAR(255) NOT NULL,
       password VARCHAR(255) NOT NULL,
+      name VARCHAR(255) NOT NULL,
       role VARCHAR(255) NOT NULL
     )
   `,
@@ -41,8 +42,8 @@ connection.connect(async (error) => {
             } else {
               connection.query(
                 `
-              INSERT INTO users (email,password ,role)
-              VALUES ('test@gmail.com','12345' ,'admin')
+              INSERT INTO users (email,password,name ,role)
+              VALUES ('test@gmail.com','12345','管理者' ,'admin')
               `,
                 (error, result) => {
                   if (error) {

@@ -4,6 +4,7 @@ import Button, { ButtonType } from "@/components/atoms/button";
 import Input from "@/components/atoms/input";
 import Checkbox from "@/components/atoms/checkbox";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export interface CompanyInfoProps {
   companyData?: object;
@@ -17,6 +18,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
   const [agree, setAgree] = useState(false);
   const [data, setData] = useState({});
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleApply = async () => {
     if (!agree) {
@@ -25,8 +27,11 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
     } else {
       setError("");
     }
+
     const res = await axios.post(`api/company/`, data);
-    console.log(res);
+    if (res.data.type === "success") {
+      router.push("/applyConfirm");
+    }
   };
 
   return (
@@ -195,6 +200,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
           }
         </span>
         <Input
+          notRequired
           inputClassName="max-w-[250px] grow border-[#D3D3D3] w-[100%]"
           value="東5-2-3"
           handleChange={(val) => {
@@ -241,6 +247,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
       <div className="flex justify-center">
         <Checkbox
           prefix={""}
+          value={agree}
           checkBoxClassName="mt-[36px]"
           title={
             <span>

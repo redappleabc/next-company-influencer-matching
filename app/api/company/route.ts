@@ -62,26 +62,23 @@ export async function POST(request: NextRequest) {
 
     const result = await connection.query(query);
     console.log("Record inserted successfully!", "result");
-    return NextResponse.json({ res: "success" });
+    return NextResponse.json({ type: "success" });
   } catch (error) {
     console.error("Error creating table or inserting record:", error);
-    return NextResponse.json({ error: error });
+    return NextResponse.json({ type: "error", msg: "error" });
   }
 }
 export async function GET() {
   try {
     const query = "SELECT * FROM company";
     const rows = await new Promise<RowType[]>((resolve, reject) => {
-      connection.query(
-        "SELECT COUNT(*) AS count FROM users where role = 'admin'",
-        (error, rows) => {
-          if (error) {
-            reject(error);
-            return;
-          }
-          resolve(rows);
+      connection.query(query, (error, rows) => {
+        if (error) {
+          reject(error);
+          return;
         }
-      );
+        resolve(rows);
+      });
     });
     return NextResponse.json(rows);
   } catch (error) {

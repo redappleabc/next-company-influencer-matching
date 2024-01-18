@@ -3,17 +3,22 @@ import Button from "@/components/atoms/button";
 import Input from "@/components/atoms/input";
 import { ButtonType } from "@/components/atoms/button";
 import Link from "next/link";
-import axios from "axios";
+import { useRecoilState } from "recoil";
+import { authUserState } from "@/recoil/atom/auth/authUserAtom";
+import { login } from "@/features/auth/provider";
+
+import { useRouter } from "next/navigation";
+
 import { useState } from "react";
-import { log } from "console";
 
 export default function LoginPage() {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const router = useRouter();
+  const [_, setAuthUser] = useRecoilState(authUserState);
+
   const handleLogin = async () => {
-    // const result = await axios.post(`/api/auth`, {});
-    // console.log("clikc", result.data);
     if (password === "" && id === "") {
       setError("ID・PWを入力してください。");
       return;
@@ -26,12 +31,22 @@ export default function LoginPage() {
       setError("パスワードを入力してください。");
       return;
     }
-    const result = await axios.post(`/api/auth`, { id, password });
-    if (result.data.type === "error") {
-      setError(result.data.msg);
+    const { data: response, error } = await login({ email: id, password });
+    if (response.error || !response.type) {
+      setError("サーバーでエラーが発生しました。");
+      return;
+    }
+    if (response.type === "error") {
+      setError(response.msg);
     } else {
-      console.log(result);
-      setError("");
+      setAuthUser({ user: response.data });
+      switch (response.data?.role) {
+        case "admin":
+          router.push("/companyList");
+          break;
+        default:
+          break;
+      }
     }
   };
   return (

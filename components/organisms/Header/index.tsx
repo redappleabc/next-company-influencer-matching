@@ -2,13 +2,18 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRecoilValue, useRecoilState } from "recoil";
+import { authUserState } from "@/recoil/atom/auth/authUserAtom";
 
 export interface Headerprops {
   mode: string;
 }
 
 const Header: React.FC<Headerprops> = ({ mode }: Headerprops) => {
+  const [_, setAuthUser] = useRecoilState(authUserState);
   const [showMenu, setShowMenu] = useState(false);
+  const authUser = useRecoilValue(authUserState);
+
   return mode === "auth" ? (
     <div className="h-[90px] bg-[white] flex justify-between items-center px-[25px] absolute top-0 w-full">
       <img src="/img/logo(red).svg" className="h-[51px] sp:w-[30%]" />
@@ -22,7 +27,7 @@ const Header: React.FC<Headerprops> = ({ mode }: Headerprops) => {
             <span className="sp:hidden">お問い合わせ</span>
           </button>
         </Link>
-        <Link href={"applyCompany"}>
+        <Link href={"apply"}>
           <button className="h-[37px] bg-[#FF2929] text-white py-[10px] px-[30px] sp:px-[10px] justify-center flex items-center rounded-[30px] mr-[70px] sp:mr-[10px]">
             <img
               src="/img/brand.svg"
@@ -48,10 +53,16 @@ const Header: React.FC<Headerprops> = ({ mode }: Headerprops) => {
           }}
         />
         <div className=" text-[white] h-[full] flex items-center px-[32px] text-header">
-          管理者名
+          {authUser.user?.name}
         </div>
         <img src="/img/logout.svg" className="lg:hidden h-[14px] mx-[22px]" />
-        <div className="text-[white] h-[full] flex items-center px-[32px] sp:hidden">
+        <div
+          className="text-[white] h-[full] flex items-center px-[32px] sp:hidden cursor-pointer"
+          onClick={() => {
+            setAuthUser({ user: null });
+            localStorage.removeItem("user");
+          }}
+        >
           ログアウト
         </div>
       </div>

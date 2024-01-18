@@ -12,7 +12,7 @@ export default function CompanyListPage() {
   useEffect(() => {
     const fetchData = async () => {
       const res = await axios.get("api/company");
-      console.log(res);
+      setData(res.data);
     };
 
     fetchData();
@@ -24,72 +24,6 @@ export default function CompanyListPage() {
       setActive(idx);
     }
   };
-  // const data = [
-  //   {
-  //     companyName: "株式会社ABC",
-  //     personName: "山田 太郎",
-  //     condition: "稼働中",
-  //     settlement: "未登録",
-  //     freeAccount: false,
-  //     date: "2023/01/01",
-  //   },
-  //   {
-  //     companyName: "株式会社ABC",
-  //     personName: "山田 太郎",
-  //     condition: "稼働中",
-  //     settlement: "未登録",
-  //     freeAccount: true,
-  //     date: "2023/01/01",
-  //   },
-  //   {
-  //     companyName: "株式会社ABC",
-  //     personName: "山田 太郎",
-  //     condition: "稼働中",
-  //     settlement: "",
-  //     freeAccount: false,
-  //     date: "2023/01/01",
-  //   },
-  //   {
-  //     companyName: "株式会社ABC",
-  //     personName: "山田 太郎",
-  //     condition: "稼働中",
-  //     settlement: "未登録",
-  //     freeAccount: true,
-  //     date: "2023/01/01",
-  //   },
-  //   {
-  //     companyName: "株式会社ABC",
-  //     personName: "山田 太郎",
-  //     condition: "稼働中",
-  //     settlement: "未登録",
-  //     freeAccount: true,
-  //     date: "2023/01/01",
-  //   },
-  //   {
-  //     companyName: "株式会社ABC",
-  //     personName: "山田 太郎",
-  //     condition: "稼働中",
-  //     settlement: "未登録",
-  //     freeAccount: true,
-  //     date: "2023/01/01",
-  //   },
-  //   {
-  //     companyName: "株式会社ABC",
-  //     personName: "山田 太郎",
-  //     condition: "稼働中",
-  //     settlement: "未登録",
-  //     freeAccount: "",
-  //     date: "2023/01/01",
-  //   },
-  //   {
-  //     companyName: "株式会社ABC",
-  //     personName: "山田 太郎",
-  //     condition: "稼働中",
-  //     settlement: "",
-  //     freeAccount: "",
-  //     date: "2023/01/01",
-  //   },
-  // ];
   return (
     <div>
       <div className="px-[30px] sp:px-[12px] pt-[110px] pb-[30px]">
@@ -159,16 +93,16 @@ export default function CompanyListPage() {
                   <Link href={"/company"}>{aData.companyName}</Link>
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3] ">
-                  {aData.personName}
+                  {aData.responsibleName}
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3]">
-                  {aData.condition}
+                  {aData.status}
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3]">
-                  {aData.settlement}
+                  {aData.payment}
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3]">
-                  {aData.freeAccount}
+                  {aData.freeAccount && "無料アカウント"}
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3] ">
                   {aData.date}

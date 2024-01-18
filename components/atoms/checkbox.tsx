@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 export interface CheckboxProps {
   checkBoxClassName?: string;
   prefix?: string;
+  value?: boolean;
   title?: ReactNode;
   handleChange: (val: boolean) => void;
 }
@@ -17,14 +18,18 @@ const Checkbox: React.FC<CheckboxProps> = ({
   checkBoxClassName,
   prefix,
   title,
+  value,
   handleChange,
 }: CheckboxProps) => {
+  console.log(value);
+
   return (
     <span className={"flex sp:text-sp items-center " + checkBoxClassName}>
       {prefix && (
         <span className="mr-[11px] sp:text-sp text-[#A8A8A8]">{prefix}</span>
       )}
       <input
+        defaultChecked={value}
         type="checkbox"
         className="w-[18px]  sp:text-sp mr-[10px] h-[18px] border border-[#D3D3D3]"
         onChange={(e) => {

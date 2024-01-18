@@ -6,6 +6,7 @@ export interface ButtonProps {
   buttonClassName?: string;
   buttonType: ButtonType;
   children: ReactNode;
+  submit?: boolean;
   handleClick?: () => void;
 }
 export enum ButtonType {
@@ -27,9 +28,11 @@ const Button: React.FC<ButtonProps> = ({
   buttonType = ButtonType.PRIMARY,
   children,
   handleClick,
+  submit,
 }: ButtonProps) => {
   return (
     <button
+      type={submit ? "submit" : "button"}
       onClick={handleClick}
       className={classNames[buttonType] + buttonClassName}
     >

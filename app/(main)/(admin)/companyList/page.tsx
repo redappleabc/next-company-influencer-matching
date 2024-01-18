@@ -1,8 +1,10 @@
 import Companylistpage from "@/features/projects/pages/admin/companyListPage";
 
-function CompanyList(){
-    return(<div>
-        <Companylistpage/>
-    </div>)
+function CompanyList() {
+  return (
+    <div>
+      <Companylistpage />
+    </div>
+  );
 }
-export default CompanyList
+export default CompanyList;
