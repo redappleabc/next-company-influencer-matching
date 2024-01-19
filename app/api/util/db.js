@@ -1,4 +1,3 @@
-import { Console, log } from "console";
 import mysql from "mysql";
 
 const connection = mysql.createConnection({

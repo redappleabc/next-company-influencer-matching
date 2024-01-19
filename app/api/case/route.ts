@@ -4,21 +4,19 @@ import { RowDataPacket } from "mysql";
 interface RowType extends RowDataPacket {
   // Define the structure of your row
   id: number;
-  companyName: string;
-  companyNameGana: string;
-  representativeName: string;
-  representativeNameGana: string;
-  responsibleName: string;
-  responsibleNameGana: string;
-  webSite: string;
-  phoneNumber: string;
-  emailAddress: string;
-  postalCode: string;
-  address: string;
-  building: string;
+  caseType: string;
+  caseName: string;
+  caseContent: string;
+  wantedHashTag: string;
+  wantedSNS: string;
+  casePlace: string;
+  collectionStart: string;
+  collectionEnd: string;
+  caseEnd: string;
+  collectionCnt: string;
+  addtion: string;
   status: string;
-  payment: string;
-  freeAccount: boolean;
+  date: string;
   // Add any other fields you have in your table
 }
 export async function POST(request: NextRequest) {
@@ -29,7 +27,6 @@ export async function POST(request: NextRequest) {
       today.getMonth() + 1
     }/${today.getDate()}`;
     const defaultValues = {
-      status: "停止中",
       date: todayString,
     };
     body = { ...body, ...defaultValues };
@@ -42,34 +39,28 @@ export async function POST(request: NextRequest) {
     });
     // insertQuery += `'${body["ds"]}'`;
     await connection.query(`
-    CREATE TABLE IF NOT EXISTS company (
+    CREATE TABLE IF NOT EXISTS cases (
       id INT AUTO_INCREMENT PRIMARY KEY,
-      companyName VARCHAR(255) NOT NULL,
-      companyNameGana VARCHAR(255) NOT NULL,
-      representativeName VARCHAR(255) NOT NULL,
-      representativeNameGana VARCHAR(255) NOT NULL,
-      responsibleName VARCHAR(255) NOT NULL,
-      responsibleNameGana VARCHAR(255) NOT NULL,
-      webSite VARCHAR(255) NOT NULL,
-      phoneNumber VARCHAR(255) NOT NULL,
-      emailAddress VARCHAR(255) NOT NULL,
-      postalCode VARCHAR(255) NOT NULL,
-      address VARCHAR(255) NOT NULL,
-      building VARCHAR(255) NOT NULL,
+      caseType VARCHAR(255) NOT NULL,
+      caseName VARCHAR(255) NOT NULL,
+      caseContent VARCHAR(255) NOT NULL,
+      wantedHashTag VARCHAR(255) NOT NULL,
+      wantedSNS VARCHAR(255) NOT NULL,
+      casePlace VARCHAR(255) NOT NULL,
+      collectionStart VARCHAR(255) NOT NULL,
+      collectionEnd VARCHAR(255) NOT NULL,
+      caseEnd VARCHAR(255) NOT NULL,
+      collectionCnt VARCHAR(255) NOT NULL,
+      addition VARCHAR(255) NOT NULL,
       status VARCHAR(255) NOT NULL,
-      payment VARCHAR(255) NOT NULL,
-      paymentFailed VARCHAR(255) NOT NULL,
-      monthlyCollectionCnt VARCHAR(255) NOT NULL,
-      concurrentCollectionCnt VARCHAR(255) NOT NULL,
-      plan VARCHAR(255) NOT NULL,
-      freeAccount BOOLEAN NOT NULL DEFAULT FALSE,
-      userId int,
+      collectionStatus VARCHAR(255) NOT NULL,
       date VARCHAR(255) NOT NULL,
-      FOREIGN KEY (userId) REFERENCES users(id)
+      companyId int,
+      FOREIGN KEY (companyId) REFERENCES company(id)
     )
   `);
     console.log("Table created successfully!");
-    const query = `INSERT INTO company (${query1.slice(
+    const query = `INSERT INTO cases (${query1.slice(
       0,
       -1
     )}) VALUES(${query2.slice(0, -1)})`;
@@ -81,10 +72,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ type: "error", msg: "error" });
   }
 }
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const query = "SELECT * FROM company";
-    const rows = await new Promise<RowType[]>((resolve, reject) => {
+    const query = `SELECT cases.*, company.companyName
+    FROM cases
+    LEFT JOIN company ON cases.companyId=company.id
+    ORDER BY cases.id;`;
+    // const query = `SELECT * FROM cases`;
+    const rows = await new Promise((resolve, reject) => {
       connection.query(query, (error, rows) => {
         if (error) {
           reject(error);
@@ -96,26 +91,18 @@ export async function GET() {
     return NextResponse.json(rows);
   } catch (error) {
     console.error("Error fetching data:", error);
-    return NextResponse.json({ type: "error", msg: "no table exists" });
+    return NextResponse.json({ error: error }, { status: 500 });
   }
 }
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    let query = "UPDATE company SET ";
+    let query = "UPDATE cases SET ";
     const keys = Object.keys(body);
 
-    const freeAccount =
-      body.freeAccount == 1 || body.freeAccount == true ? 1 : 0;
-    console.log("fre", body.freeAccount, freeAccount);
-
     keys.map((aKey) => {
-      if (aKey !== "id" && aKey !== "userId") {
-        if (aKey === "freeAccount") {
-          query += `${aKey} = ${freeAccount}, `;
-        } else {
-          query += `${aKey} = '${body[aKey]}', `;
-        }
+      if (aKey !== "id" && aKey !== "companyId") {
+        query += `${aKey} = '${body[aKey]}', `;
       }
     });
     query = query.slice(0, -2);

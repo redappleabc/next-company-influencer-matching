@@ -1,0 +1,23 @@
+import { NextRequest, NextResponse } from "next/server";
+import connection from "@/app/api/util/db.js";
+
+export async function GET(request: NextRequest) {
+  try {
+    const id = request.nextUrl.searchParams.get("id") || "";
+
+    const query = `SELECT * FROM cases where id = ${id}`;
+    const rows = await new Promise((resolve, reject) => {
+      connection.query(query, (error, rows) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve(rows);
+      });
+    });
+    return NextResponse.json(rows[0]);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return NextResponse.json({ error: error }, { status: 500 });
+  }
+}

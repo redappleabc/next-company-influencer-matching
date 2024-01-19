@@ -121,13 +121,17 @@ export default function CompanyListPage() {
               <div className="flex justify-between px-[30px] py-[20px] w-full">
                 <div className="flex">
                   <span className="text-[#3F8DEB] underline hover:cursor-pointer underline-offset-3 sp:text-sp">
-                    {aData.companyName}
+                    <Link href={`/company/${aData.id}`}>
+                      {aData.companyName}
+                    </Link>
                   </span>
 
-                  {aData.freeAccount && (
+                  {aData.freeAccount ? (
                     <span className="text-[#B3B3B4] ml-[15px] sp:text-spsmall">
                       無料アカウント
                     </span>
+                  ) : (
+                    ""
                   )}
                 </div>
 
@@ -137,32 +141,32 @@ export default function CompanyListPage() {
                 />
               </div>
               {idx === active && (
-                <div className="p-[25px]">
-                  <div className="flex">
+                <div className="px-[25px] py-[10px]">
+                  <div className="flex my-[10px]">
                     <div className="w-[80px] mr-[36px] text-right text-[#A9A9A9] sp:text-spsmall">
                       担当者名
                     </div>
                     <span className="mb-[7px] sp:text-spsmall">
-                      {aData.personName}
+                      {aData.responsibleName}
                     </span>
                   </div>
-                  <div className="flex">
+                  <div className="flex my-[10px]">
                     <div className="w-[80px] mr-[36px] text-right text-[#A9A9A9] sp:text-spsmall">
                       状態
                     </div>
                     <span className="mb-[7px] sp:text-spsmall">
-                      {aData.condition}
+                      {aData.status}
                     </span>
                   </div>
-                  <div className="flex">
+                  <div className="flex my-[10px]">
                     <div className="w-[80px] mr-[36px] text-right text-[#A9A9A9] sp:text-spsmall">
                       決算
                     </div>
                     <span className="mb-[7px] sp:text-spsmall">
-                      {aData.settlement}
+                      {aData.payment}
                     </span>
                   </div>
-                  <div className="flex">
+                  <div className="flex my-[10px]">
                     <div className="w-[80px] mr-[36px] text-right text-[#A9A9A9] sp:text-spsmall">
                       登録日
                     </div>

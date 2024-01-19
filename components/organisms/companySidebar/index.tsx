@@ -11,7 +11,7 @@ export default function CompanySidebar() {
           <Link href={"/appliedList"}>登録案件一覧</Link>
         </div>
         <div className="p-[12px] text-[14px]">
-          <Link href={"/newCase"}>案件の新規登録</Link>
+          <Link href={"/case"}>案件の新規登録</Link>
         </div>
       </div>
       <div className="pb-[20px] pt-[20px]  border-b border-gray-300 ">

@@ -3,7 +3,7 @@ import CompanyInfoPage from "@/features/projects/pages/company/companyInfo";
 function CompanyInfo() {
   return (
     <div>
-      <CompanyInfoPage />
+      <CompanyInfoPage applyMode={false} />
     </div>
   );
 }

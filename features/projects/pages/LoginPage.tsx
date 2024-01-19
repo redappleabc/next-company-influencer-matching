@@ -44,6 +44,9 @@ export default function LoginPage() {
         case "admin":
           router.push("/companyList");
           break;
+        case "企業":
+          router.push("/appliedList/");
+          break;
         default:
           break;
       }

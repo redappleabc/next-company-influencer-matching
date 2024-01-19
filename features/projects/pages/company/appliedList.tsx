@@ -3,10 +3,23 @@
 import Checkbox from "@/components/atoms/checkbox";
 import SearchBar from "@/components/organisms/searchbar";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getUser } from "../../utils/getUser";
+import axios from "axios";
 
 export default function AppliedList() {
   const [active, setActive] = useState(null);
+  const user = getUser();
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios.get(
+        `/api/case/company?id=${user.user?.targetId}`
+      );
+      setData(result.data);
+    };
+    fetchData();
+  }, []);
 
   const onItemClick = ({ idx }: { idx: Number }) => {
     if (active === idx) {
@@ -15,32 +28,6 @@ export default function AppliedList() {
       setActive(idx);
     }
   };
-  const data = [
-    {
-      caseType: "来店",
-      caseName: "カフェPR",
-      status: "申請中",
-      recruitMentStatus: "募集中",
-      start: "2023/01/01",
-      end: "2023/01/01",
-    },
-    {
-      caseType: "来店",
-      caseName: "カフェPR",
-      status: "申請中",
-      recruitMentStatus: "募集中",
-      start: "2023/01/01",
-      end: "2023/01/01",
-    },
-    {
-      caseType: "来店",
-      caseName: "カフェPR",
-      status: "申請中",
-      recruitMentStatus: "募集中",
-      start: "2023/01/01",
-      end: "2023/01/01",
-    },
-  ];
   return (
     <div>
       <div className="px-[30px] sp:px-[12px] pt-[110px] pb-[30px]">
@@ -100,10 +87,10 @@ export default function AppliedList() {
               <td className="text-center w-[100px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3] ">
                 募集終了
               </td>
-              <td className="px-[35px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3] ">
+              <td className="w-[70px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3] text-center ">
                 詳細
               </td>
-              <td className="px-[35px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3] ">
+              <td className="w-[70px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3] text-center  ">
                 編集
               </td>
             </tr>
@@ -111,25 +98,25 @@ export default function AppliedList() {
           <tbody>
             {data.map((aData, idx) => (
               <tr key={idx}>
-                <td className="px-[35px] py-[25px]  border border-[#D3D3D3] hover:cursor-pointer">
+                <td className="px-[35px] py-[25px]  border border-[#D3D3D3]">
                   {aData.caseType}
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3] ">
                   {aData.caseName}
                 </td>
-                <td className="px-[35px] py-[25px]  border border-[#D3D3D3] hover:cursor-pointer">
+                <td className="px-[35px] py-[25px]  border border-[#D3D3D3]">
                   {aData.status}
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3]">
-                  {aData.recruitMentStatus}
+                  {aData.collectionStatus}
                 </td>
                 <td className="text-center w-[100px] py-[25px]  border border-[#D3D3D3]">
-                  {aData.start}
+                  {aData.collectionStart}
                 </td>
                 <td className="text-center w-[100px] py-[25px]  border border-[#D3D3D3] ">
-                  {aData.end}
+                  {aData.collectionEnd}
                 </td>
-                <td className="px-[35px] py-[25px]  border border-[#D3D3D3]">
+                <td className="py-[25px]  border border-[#D3D3D3]">
                   <Link href={"/caseDetail"}>
                     <img
                       src="/img/detail.svg"
@@ -138,8 +125,8 @@ export default function AppliedList() {
                     />
                   </Link>
                 </td>
-                <td className="px-[35px] py-[25px]  border border-[#D3D3D3] ">
-                  <Link href={"/newCase"}>
+                <td className="py-[25px]  border border-[#D3D3D3] ">
+                  <Link href={`/case/${aData.id}`}>
                     <img src="/img/edit.svg" alt="edit" className="m-auto" />
                   </Link>
                 </td>
@@ -157,7 +144,7 @@ export default function AppliedList() {
               <div className="flex justify-between px-[30px] py-[20px] w-full">
                 <div className="flex">
                   <span className="text-[#3F8DEB] underline hover:cursor-pointer underline-offset-3 sp:text-sp">
-                    {aData.caseType}
+                    {aData.caseName}
                   </span>
                 </div>
 
@@ -167,38 +154,51 @@ export default function AppliedList() {
                 />
               </div>
               {idx === active && (
-                <div className="p-[25px]">
-                  <div className="flex">
+                <div className="px-[25px] py-[10px]">
+                  <div className="flex my-[10px]">
                     <div className="w-[80px] mr-[36px] text-right text-[#A9A9A9] sp:text-spsmall">
-                      担当者名
+                      案件種別
                     </div>
                     <span className="mb-[7px] sp:text-spsmall">
-                      {aData.caseName}
+                      {aData.caseType}
                     </span>
                   </div>
-                  <div className="flex">
+                  <div className="flex my-[10px]">
                     <div className="w-[80px] mr-[36px] text-right text-[#A9A9A9] sp:text-spsmall">
-                      状態
+                      申請状態
                     </div>
                     <span className="mb-[7px] sp:text-spsmall">
                       {aData.status}
                     </span>
                   </div>
-                  <div className="flex">
+                  <div className="flex my-[10px]">
                     <div className="w-[80px] mr-[36px] text-right text-[#A9A9A9] sp:text-spsmall">
-                      決算
+                      募集状態
                     </div>
                     <span className="mb-[7px] sp:text-spsmall">
-                      {aData.recruitMentStatus}
+                      {aData.collectionStatus}
                     </span>
                   </div>
-                  <div className="flex">
+                  <div className="flex my-[10px]">
                     <div className="w-[80px] mr-[36px] text-right text-[#A9A9A9] sp:text-spsmall">
-                      登録日
+                      募集開始
                     </div>
                     <span className="mb-[7px] sp:text-spsmall">
-                      {aData.start}
+                      {aData.collectionStart}
                     </span>
+                  </div>
+                  <div className="flex my-[10px]">
+                    <div className="w-[80px] mr-[36px] text-right text-[#A9A9A9] sp:text-spsmall">
+                      募集終了
+                    </div>
+                    <span className="mb-[7px] sp:text-spsmall">
+                      {aData.collectionEnd}
+                    </span>
+                  </div>
+                  <div className="flex my-[10px]">
+                    <div className="w-[80px] mr-[36px] text-right text-[#3F8DEB] underline hover:cursor-pointer underline-offset-3 sp:text-spsmall ">
+                      詳細
+                    </div>
                   </div>
                 </div>
               )}

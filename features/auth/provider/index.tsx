@@ -1,3 +1,4 @@
+"use client";
 import axios from "axios";
 
 export async function login({
@@ -13,6 +14,7 @@ export async function login({
   try {
     const result = await axios.post(`/api/auth`, { id: email, password });
     data = result.data;
+
     localStorage.setItem("user", JSON.stringify(data.data));
   } catch (e) {
     error = e;

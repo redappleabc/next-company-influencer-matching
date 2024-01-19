@@ -18,7 +18,9 @@ const CompanyPage: React.FC<CompanyProps> = ({ companyData }: CompanyProps) => {
   }, [companyData]);
   const handleUpdate = async () => {
     const result = await axios.put("/api/company", data);
-    console.log(result.data);
+    if (result.data.type === "success") {
+      console.log("succes");
+    }
   };
   return (
     <div className="text-center bg-[white] px-[35px] sp:px-[12px] sp:text-small ">
@@ -27,9 +29,9 @@ const CompanyPage: React.FC<CompanyProps> = ({ companyData }: CompanyProps) => {
       </div>
       <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD] mt-[90px] sp:mt-[30px]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
-          <span className="text-[#6F6F6F]">{data?.companyName}</span>
+          <span className="text-[#6F6F6F]">企業名</span>
         </span>
-        <span>株式会社ABC</span>
+        <span>{data?.companyName}</span>
       </div>
       <div className="flex items-center py-[20px] w-[50%]  sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">

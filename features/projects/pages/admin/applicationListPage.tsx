@@ -2,12 +2,21 @@
 
 import Checkbox from "@/components/atoms/checkbox";
 import SearchBar from "@/components/organisms/searchbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import axios from "axios";
 
 export default function ApplicationListPage() {
   const [active, setActive] = useState(null);
-
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios.get("/api/case");
+      setData(result.data);
+      console.log(result.data);
+    };
+    fetchData();
+  }, []);
   const onItemClick = ({ idx }: { idx: Number }) => {
     if (active === idx) {
       setActive(null);
@@ -15,48 +24,6 @@ export default function ApplicationListPage() {
       setActive(idx);
     }
   };
-  const data = [
-    {
-      companyName: "株式会社ABC",
-      case: "来店",
-      caseName: "カフェPR",
-      status: "申請中",
-      period: "2023/01/01 11:11～2023/01/01 11:11",
-      date: "2023/01/01 11:11",
-    },
-    {
-      companyName: "株式会社ABC",
-      case: "来店",
-      caseName: "カフェPR",
-      status: "申請中",
-      period: "2023/01/01 11:11～2023/01/01 11:11",
-      date: "2023/01/01 11:11",
-    },
-    {
-      companyName: "株式会社ABC",
-      case: "来店",
-      caseName: "カフェPR",
-      status: "申請中",
-      period: "2023/01/01 11:11～2023/01/01 11:11",
-      date: "2023/01/01 11:11",
-    },
-    {
-      companyName: "株式会社ABC",
-      case: "来店",
-      caseName: "カフェPR",
-      status: "申請中",
-      period: "2023/01/01 11:11～2023/01/01 11:11",
-      date: "2023/01/01 11:11",
-    },
-    {
-      companyName: "株式会社ABC",
-      case: "来店",
-      caseName: "カフェPR",
-      status: "申請中",
-      period: "2023/01/01 11:11～2023/01/01 11:11",
-      date: "2023/01/01 11:11",
-    },
-  ];
   return (
     <div>
       <div className="px-[30px] sp:px-[12px] pt-[110px] pb-[30px]">
@@ -109,10 +76,12 @@ export default function ApplicationListPage() {
             {data.map((aData, idx) => (
               <tr key={idx}>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3] hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
-                  <Link href={"/company"}>{aData.companyName}</Link>
+                  <Link href={`/company/${aData.companyId}`}>
+                    {aData.companyName}
+                  </Link>
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3] ">
-                  {aData.case}
+                  {aData.caseType}
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3] hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
                   <Link href={"/application"}>{aData.caseName}</Link>
@@ -121,7 +90,7 @@ export default function ApplicationListPage() {
                   {aData.status}
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3]">
-                  {aData.period}
+                  {`${aData.collectionStart}~${aData.collectionEnd}`}
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3] ">
                   {aData.date}

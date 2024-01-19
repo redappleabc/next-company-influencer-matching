@@ -18,12 +18,12 @@ export enum ButtonType {
   OUTLINED,
 }
 const classNames = [
-  "px-[20px] py-[10px] rounded-[5px] text-[white] bg-[#3F8DEB] ",
-  "px-[20px] py-[10px] rounded-[5px] text-[white] bg-[#A9A9A9] ",
-  "px-[20px] py-[10px] rounded-[5px] text-[white] bg-[#EE5736] ",
-  "px-[15px] py-[7px] bg-[#A9A9A9] text-[white] ",
-  "p-[15px] py-[7px] bg-[#3F8DEB] text-[white] rounded-[50%] ",
-  "px-[20px] py-[10px] rounded-[5px] bg-[white] rounded-[5px] border-[1.5px] text-[#3F8DEB] border-[#3F8DEB] ",
+  "px-[20px] py-[10px] rounded-[5px] text-[white] bg-[#3F8DEB] hover:bg-[#2e6fbe] hover:shadow-lg duration-500 ",
+  "px-[20px] py-[10px] rounded-[5px] text-[white] bg-[#A9A9A9] hover:bg-[#8f8f8f] hover:shadow-lg duration-500 ",
+  "px-[20px] py-[10px] rounded-[5px] text-[white] bg-[#EE5736] hover:bg-[#a33f28] hover:shadow-lg duration-500 ",
+  "px-[15px] py-[7px] bg-[#A9A9A9] text-[white] hover:bg-[#767676] hover:shadow-lg duration-500 ",
+  "p-[15px] py-[7px] bg-[#3F8DEB] text-[white] rounded-[50%] hover:bg-[#2d6bb7] hover:shadow-lg duration-500 ",
+  "px-[20px] py-[10px] rounded-[5px] bg-[white] rounded-[5px] border-[1.5px] text-[#3F8DEB] border-[#3F8DEB] hover:bg-[#b7b7b7] hover:shadow-lg duration-500  ",
 ];
 const Button: React.FC<ButtonProps> = ({
   buttonClassName = "",
@@ -38,6 +38,7 @@ const Button: React.FC<ButtonProps> = ({
       onClick={handleClick}
       className={classNames[buttonType] + buttonClassName}
     >
+      <div className="bg-[#a33f28]"></div>
       {children}
     </button>
   );

@@ -1,8 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button, { ButtonType } from "@/components/atoms/button";
 import Input from "@/components/atoms/input";
 import Checkbox from "@/components/atoms/checkbox";
+import { useRecoilValue } from "recoil";
+import { authUserState } from "@/recoil/atom/auth/authUserAtom";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
@@ -15,31 +17,91 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
   companyData,
   applyMode,
 }: CompanyInfoProps) => {
+  const authUser = useRecoilValue(authUserState);
+
   const [agree, setAgree] = useState(false);
-  const [data, setData] = useState({});
+  const [data, setData] = useState({
+    companyName: "",
+    companyNameGana: "",
+    representativeName: "",
+    representativeNameGana: "",
+    responsibleName: "",
+    responsibleNameGana: "",
+    webSite: "",
+    phoneNumber: "",
+    emailAddress: "",
+    postalCode: "",
+    address: "",
+  });
   const [error, setError] = useState("");
   const router = useRouter();
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios.get(
+        `/api/company/aCompany?id=${authUser.user?.targetId}`
+      );
 
-  const handleApply = async () => {
-    if (!agree) {
+      setData(result.data);
+    };
+    if (!applyMode) fetchData();
+  }, []);
+  const handleApply = async (isApply) => {
+    const msgs = {
+      companyName: "企業名を入力してください",
+      companyNameGana: "企業名カナを入力してください",
+      representativeName: "代表者名を入力してください",
+      representativeNameGana: "代表者名カナを入力してください",
+      responsibleName: "担当者名を入力してください",
+      responsibleNameGana: "担当者名カナを入力してください",
+      webSite: "WEBサイトのURLを入力してください",
+      phoneNumber: "電話番号を入力してください ",
+      emailAddress: "電話番号形式ではありません  ",
+      postalCode: "郵便番号を入力してください",
+      address: "住所を入力してください",
+    };
+    const keys = Object.keys(msgs);
+    let isValid = true;
+    keys.forEach((aKey) => {
+      if (data[aKey] === "") {
+        if (!isValid) return;
+        setError(msgs[aKey]);
+        isValid = false;
+      }
+    });
+    if (!agree && isValid) {
       setError("個人情報の取り扱いに同意する必要があります。");
       return;
-    } else {
-      setError("");
     }
-
-    const res = await axios.post(`api/company`, data);
-    if (res.data.type === "success") {
-      router.push("/applyConfirm");
+    let phonePattern = /^0\d{2}-\d{4}-\d{4}$/;
+    if (!phonePattern.test(data.phoneNumber.trim())) {
+      setError("電話番号形式ではありません");
+      isValid = false;
+    }
+    let mailPattern = /^[A-Za-z0-9]+@[A-Za-z0-9]+\.[A-Za-z0-9]+[0-9]{4}$/;
+    if (!mailPattern.test(data.emailAddress.trim())) {
+      setError("メールアドレス形式ではありません");
+      isValid = false;
+    }
+    if (!isValid) return;
+    if (isApply) {
+      const res = await axios.post(`api/company`, data);
+      if (res.data.type === "success") {
+        router.push("/applyConfirm");
+      }
+    }
+    if (!isApply) {
+      const res = await axios.put(`api/company`, data);
+      setError("");
+      console.log(data);
     }
   };
 
   return (
     <div
       className={
-        "text-center px-[35px] sp:px-[12px] sp:text-small " + applyMode
-          ? "pt-[200px]"
-          : "bg-[white] "
+        applyMode
+          ? "text-center px-[35px] sp:px-[12px] sp:text-small pt-[200px]"
+          : "text-center px-[35px] sp:px-[12px] sp:text-small bg-[white]"
       }
     >
       {!applyMode && (
@@ -54,7 +116,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
         </span>
         <Input
           inputClassName="max-w-[250px] grow border-[#D3D3D3] w-[100%]"
-          value="株式会社ABC"
+          value={data?.companyName}
           handleChange={(val) => {
             setData({ ...data, companyName: val });
           }}
@@ -67,7 +129,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
         </span>
         <Input
           inputClassName="max-w-[250px] grow border-[#D3D3D3] w-[100%]"
-          value="カブシキガイシャ エービーシー"
+          value={data?.companyNameGana}
           handleChange={(val) => {
             setData({ ...data, companyNameGana: val });
           }}
@@ -80,7 +142,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
         </span>
         <Input
           inputClassName="max-w-[250px] grow border-[#D3D3D3] w-[100%]"
-          value="山田 太郎"
+          value={data?.representativeName}
           handleChange={(val) => {
             setData({ ...data, representativeName: val });
           }}
@@ -93,7 +155,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
         </span>
         <Input
           inputClassName="max-w-[250px] grow border-[#D3D3D3] w-[100%]"
-          value="ヤマダ タロウ"
+          value={data?.representativeNameGana}
           handleChange={(val) => {
             setData({ ...data, representativeNameGana: val });
           }}
@@ -106,7 +168,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
         </span>
         <Input
           inputClassName="max-w-[250px] grow border-[#D3D3D3] w-[100%]"
-          value="山田 太郎"
+          value={data?.responsibleName}
           handleChange={(val) => {
             setData({ ...data, responsibleName: val });
           }}
@@ -119,7 +181,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
         </span>
         <Input
           inputClassName="max-w-[250px] grow border-[#D3D3D3] w-[100%]"
-          value="ヤマダ タロウ"
+          value={data?.responsibleNameGana}
           handleChange={(val) => {
             setData({ ...data, responsibleNameGana: val });
           }}
@@ -132,7 +194,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
         </span>
         <Input
           inputClassName="max-w-[250px] grow border-[#D3D3D3] w-[100%]"
-          value="https://yahoo.co.jp"
+          value={data?.webSite}
           handleChange={(val) => {
             setData({ ...data, webSite: val });
           }}
@@ -145,7 +207,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
         </span>
         <Input
           inputClassName="max-w-[250px] grow border-[#D3D3D3] w-[100%]"
-          value="090-9999-9999"
+          value={data?.phoneNumber}
           handleChange={(val) => {
             setData({ ...data, phoneNumber: val });
           }}
@@ -158,7 +220,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
         </span>
         <Input
           inputClassName="max-w-[250px] grow border-[#D3D3D3] w-[100%]"
-          value="yamada@abc.co.jp"
+          value={data?.emailAddress}
           handleChange={(val) => {
             setData({ ...data, emailAddress: val });
           }}
@@ -171,7 +233,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
         </span>
         <Input
           inputClassName="max-w-[250px] grow border-[#D3D3D3] w-[100%]"
-          value="111-0053"
+          value={data?.postalCode}
           handleChange={(val) => {
             setData({ ...data, postalCode: val });
           }}
@@ -184,7 +246,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
         </span>
         <Input
           inputClassName="max-w-[250px] grow border-[#D3D3D3] w-[100%]"
-          value="東京都台東区浅草橋5-2-3"
+          value={data?.address}
           handleChange={(val) => {
             setData({ ...data, address: val });
           }}
@@ -202,7 +264,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
         <Input
           notRequired
           inputClassName="max-w-[250px] grow border-[#D3D3D3] w-[100%]"
-          value="東5-2-3"
+          value={data?.building}
           handleChange={(val) => {
             setData({ ...data, building: val });
           }}
@@ -214,7 +276,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
             <span>決済</span>
           </span>
           <div className="sp:text-center">
-            <span>2023/11 支払済み</span>
+            <span>{data?.payment}</span>
             <Button
               buttonType={ButtonType.DANGER}
               buttonClassName="ml-[40px] sp:ml-[0px]"
@@ -230,7 +292,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
             <span>登録日</span>
           </span>
           <div>
-            <span>2023/01/01</span>
+            <span>{data?.date}</span>
           </div>
         </div>
       )}
@@ -240,7 +302,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
             <span>状態</span>
           </span>
           <div>
-            <span>稼働中</span>
+            <span>{data?.status}</span>
           </div>
         </div>
       )}
@@ -268,7 +330,10 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
 
       {applyMode ? (
         <div className="flex justify-center mt-[36px] mb-[160px] sp:mb-[60px]">
-          <Button buttonType={ButtonType.PRIMARY} handleClick={handleApply}>
+          <Button
+            buttonType={ButtonType.PRIMARY}
+            handleClick={() => handleApply(true)}
+          >
             <span className="flex items-center">
               <span>送信する</span>
             </span>
@@ -276,7 +341,11 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
         </div>
       ) : (
         <div className="flex justify-center mt-[36px] mb-[160px] sp:mb-[60px]">
-          <Button buttonType={ButtonType.PRIMARY} buttonClassName="mr-[30px]">
+          <Button
+            buttonType={ButtonType.PRIMARY}
+            buttonClassName="mr-[30px]"
+            handleClick={() => handleApply(false)}
+          >
             <span className="flex items-center">
               <span>更新</span>
               <img
