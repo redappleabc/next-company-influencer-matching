@@ -9,6 +9,7 @@ import axios from "axios";
 import { getUser } from "../../utils/getUser";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export interface CompanyProps {
   applyMode?: boolean;
@@ -28,6 +29,8 @@ const CasePage: React.FC<CompanyProps> = ({ applyMode }: CompanyProps) => {
     collectionCnt: "",
     addition: "",
   });
+
+  const router = useRouter();
   const user = getUser();
   const [wantedSNS, setWantedSNS] = useState([]);
   const [error, setError] = useState("");
@@ -96,15 +99,13 @@ const CasePage: React.FC<CompanyProps> = ({ applyMode }: CompanyProps) => {
     }
     if (isValid) {
       if (isEditMode) {
-        console.log(body.wantedSNS);
-
         const result = await axios.put("/api/case", body);
         setError("");
-        console.log(result.data);
+        router.back();
       } else {
         const result = await axios.post("/api/case", body);
         setError("");
-        console.log(result.data);
+        router.replace("/appliedList");
       }
     }
   };
@@ -113,7 +114,7 @@ const CasePage: React.FC<CompanyProps> = ({ applyMode }: CompanyProps) => {
       <div className="flex items-center py-[20px]  w-[full] border-b-[1px] border-[#DDDDDD] mt-[70px] sp:mt-[96px]">
         <span className="text-title sp:text-sptitle">募集案件登録・編集</span>
       </div>
-      <div className="flex items-center py-[20px] w-[60%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD] mt-[90px] sp:mt-[30px]   sp:px-[18px]">
+      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD] mt-[90px] sp:mt-[30px]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span className="text-[#6F6F6F]">案件種別</span>
           <span className="ml-[10px] text-[#EE5736] text-[11px]">必須</span>
@@ -127,7 +128,7 @@ const CasePage: React.FC<CompanyProps> = ({ applyMode }: CompanyProps) => {
           />
         </div>
       </div>
-      <div className="flex items-center py-[20px] w-[60%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>案件名</span>
           <span className="ml-[10px] text-[#EE5736] text-[11px]">必須</span>
@@ -139,7 +140,7 @@ const CasePage: React.FC<CompanyProps> = ({ applyMode }: CompanyProps) => {
           handleChange={(val) => setData({ ...data, caseName: val })}
         />
       </div>
-      <div className="flex py-[20px] w-[60%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] mt-[5px] flex justify-end sp:justify-start  mr-[67px]">
           <span>案件内容</span>
           <span className="ml-[10px] text-[#EE5736] text-[11px]">必須</span>
@@ -151,7 +152,7 @@ const CasePage: React.FC<CompanyProps> = ({ applyMode }: CompanyProps) => {
           placeholder="カフェPR"
         />
       </div>
-      <div className="flex items-center py-[20px] w-[60%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>希望のハッシュタグ</span>
           <span className="ml-[10px] text-[#EE5736] text-[11px] invisible">
@@ -165,7 +166,7 @@ const CasePage: React.FC<CompanyProps> = ({ applyMode }: CompanyProps) => {
           inputClassName="max-w-[250px] grow border-[#D3D3D3] w-[100%]"
         />
       </div>
-      <div className="flex items-center py-[20px] w-[60%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>希望のSNS</span>
           <span className="ml-[10px] text-[#EE5736] text-[11px] invisible">
@@ -235,7 +236,7 @@ const CasePage: React.FC<CompanyProps> = ({ applyMode }: CompanyProps) => {
           />
         </div>
       </div>
-      <div className="flex items-center py-[20px] w-[60%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>来店場所</span>
           <span className="ml-[10px] text-[#EE5736] text-[11px] invisible">
@@ -249,7 +250,7 @@ const CasePage: React.FC<CompanyProps> = ({ applyMode }: CompanyProps) => {
           inputClassName="max-w-[250px] grow border-[#D3D3D3] w-[100%]"
         />
       </div>
-      <div className="flex items-center py-[20px] w-[60%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>募集開始</span>
           <span className="ml-[10px] text-[#EE5736] text-[11px] invisible">
@@ -264,7 +265,7 @@ const CasePage: React.FC<CompanyProps> = ({ applyMode }: CompanyProps) => {
           placeholder="yyyy/mm/dd hh:mm"
         />
       </div>
-      <div className="flex items-center py-[20px] w-[60%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>募集終了</span>
           <span className="ml-[10px] text-[#EE5736] text-[11px]">必須</span>
@@ -276,7 +277,7 @@ const CasePage: React.FC<CompanyProps> = ({ applyMode }: CompanyProps) => {
           placeholder="yyyy/mm/dd hh:mm"
         />
       </div>
-      <div className="flex items-center py-[20px] w-[60%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>案件終了</span>
           <span className="ml-[10px] text-[#EE5736] text-[11px]">必須</span>
@@ -288,7 +289,7 @@ const CasePage: React.FC<CompanyProps> = ({ applyMode }: CompanyProps) => {
           placeholder="yyyy/mm/dd hh:mm"
         />
       </div>
-      <div className="flex items-center py-[20px] w-[60%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>募集人数</span>
           <span className="ml-[10px] text-[#EE5736] text-[11px] invisible">
@@ -302,7 +303,7 @@ const CasePage: React.FC<CompanyProps> = ({ applyMode }: CompanyProps) => {
           inputClassName="max-w-[250px] grow border-[#D3D3D3] w-[100%]"
         />
       </div>
-      <div className="flex py-[20px] w-[60%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] mt-[5px] flex justify-end sp:justify-start  mr-[67px]">
           <span>補足・注意事項</span>
           <span className="ml-[10px] text-[#EE5736] text-[11px] invisible">

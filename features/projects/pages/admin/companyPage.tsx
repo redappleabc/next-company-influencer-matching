@@ -19,6 +19,7 @@ const CompanyPage: React.FC<CompanyProps> = ({ companyData }: CompanyProps) => {
   const handleUpdate = async () => {
     const result = await axios.put("/api/company", data);
     if (result.data.type === "success") {
+      router.back();
       console.log("succes");
     }
   };
@@ -188,7 +189,7 @@ const CompanyPage: React.FC<CompanyProps> = ({ companyData }: CompanyProps) => {
         <Button
           buttonType={ButtonType.PRIMARYDEFAULT}
           buttonClassName="rounded-[5px] px-[20px] py-[10px]"
-          handleClick={() => router.push("/companyList")}
+          handleClick={() => router.back()}
         >
           戻る
         </Button>

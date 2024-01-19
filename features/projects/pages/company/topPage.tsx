@@ -7,6 +7,8 @@ export default function TopPage() {
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios.get("/api/auth/noti");
+      console.log(result.data.data);
+
       setData(result.data?.data);
     };
     fetchData();
@@ -19,11 +21,19 @@ export default function TopPage() {
       <div className="sp:w-[100%] mt-[55px] px-[30px]">
         <div className="border-b-[1px] border-[#DDDDDD] mx-[30px]">
           <span className="text-header text-[#EE5736] ">重要なお知らせ</span>
-          <div className="py-[30px]">{data?.mainNoti}</div>
+          <div className="py-[30px]">
+            {data?.mainNoti.split("\n").map((a, key) => (
+              <div key={key}>{a}</div>
+            ))}
+          </div>
         </div>
         <div className="mx-[30px] mt-[40px]">
           <span className="text-header ">運営からのお知らせ</span>
-          <div className="py-[30px]">{data?.influencerNoti}</div>
+          <div className="py-[30px]">
+            {data?.influencerNoti.split("\n").map((a, key) => (
+              <div key={key}>{a}</div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

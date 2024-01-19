@@ -29,14 +29,16 @@ export default function ApplyPage() {
           className="blcok m-auto w-[265px] sp:hidden mb-[50px]"
         />
         <div className="m-[50px] text-center">
-          〇〇サービスをご覧いただきありがとうございます。
-          <br />
-          企業登録をご希望の方は以下から仮申請をしてください。
-          <br />
-          ご入力いただいたメールアドレス宛に申請フォームをお送りします。
-          <br />
+          <div className="py-[10px]">
+            〇〇サービスをご覧いただきありがとうございます。
+          </div>
+          <div className="py-[10px]">
+            企業登録をご希望の方は以下から仮申請をしてください。
+          </div>
+          <div className="py-[10px]">
+            ご入力いただいたメールアドレス宛に申請フォームをお送りします。
+          </div>
         </div>
-
         <div className="flex items-center justify-center py-[20px] w-[60%] sp:w-full m-auto">
           <div className="flex">
             <RadioBtn

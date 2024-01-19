@@ -13,7 +13,6 @@ export default function ApplicationListPage() {
     const fetchData = async () => {
       const result = await axios.get("/api/case");
       setData(result.data);
-      console.log(result.data);
     };
     fetchData();
   }, []);
@@ -34,7 +33,7 @@ export default function ApplicationListPage() {
               <div className="mt-[30px] sp:mt-[10px] text-small text-[#3F8DEB] font-bold">
                 条件を絞り込みできます。
               </div>
-              <div className="flex sp:block mt-[8px] flex-wrap">
+              <div className="flex mt-[8px] flex-wrap">
                 <Checkbox
                   prefix="状態 ： "
                   title={"申請中"}
@@ -84,7 +83,9 @@ export default function ApplicationListPage() {
                   {aData.caseType}
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3] hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
-                  <Link href={"/application"}>{aData.caseName}</Link>
+                  <Link href={`/application/${aData.id}`}>
+                    {aData.caseName}
+                  </Link>
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3]">
                   {aData.status}
@@ -109,7 +110,9 @@ export default function ApplicationListPage() {
               <div className="flex justify-between px-[30px] py-[20px] w-full">
                 <div className="flex">
                   <span className="text-[#3F8DEB] underline hover:cursor-pointer underline-offset-3 sp:text-sp">
-                    {aData.companyName}
+                    <Link href={`/application/${aData.id}`}>
+                      {aData.caseName}
+                    </Link>
                   </span>
                 </div>
 
@@ -119,34 +122,44 @@ export default function ApplicationListPage() {
                 />
               </div>
               {idx === active && (
-                <div className="p-[25px]">
-                  <div className="flex">
+                <div className="py-[25px]">
+                  <div className="flex py-[5px]">
                     <div className="w-[80px] mr-[36px] text-right text-[#A9A9A9] sp:text-spsmall">
-                      担当者名
+                      企業名
                     </div>
-                    <span className="mb-[7px] sp:text-spsmall">
-                      {aData.case}
+                    <span className="mb-[7px] sp:text-spsmall text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
+                      <Link href={`/company/${aData.companyId}`}>
+                        {aData.companyName}
+                      </Link>
                     </span>
                   </div>
-                  <div className="flex">
+                  <div className="flex py-[5px]">
+                    <div className="w-[80px] mr-[36px] text-right text-[#A9A9A9] sp:text-spsmall">
+                      案件種別
+                    </div>
+                    <span className="mb-[7px] sp:text-spsmall">
+                      {aData.caseType}
+                    </span>
+                  </div>
+                  <div className="flex py-[5px]">
                     <div className="w-[80px] mr-[36px] text-right text-[#A9A9A9] sp:text-spsmall">
                       状態
-                    </div>
-                    <span className="mb-[7px] sp:text-spsmall">
-                      {aData.caseName}
-                    </span>
-                  </div>
-                  <div className="flex">
-                    <div className="w-[80px] mr-[36px] text-right text-[#A9A9A9] sp:text-spsmall">
-                      決算
                     </div>
                     <span className="mb-[7px] sp:text-spsmall">
                       {aData.status}
                     </span>
                   </div>
-                  <div className="flex">
+                  <div className="flex py-[5px]">
                     <div className="w-[80px] mr-[36px] text-right text-[#A9A9A9] sp:text-spsmall">
-                      登録日
+                      募集期間
+                    </div>
+                    <span className="mb-[7px] sp:text-spsmall">
+                      {`${aData.collectionStart}~${aData.collectionEnd}`}
+                    </span>
+                  </div>
+                  <div className="flex py-[5px]">
+                    <div className="w-[80px] mr-[36px] text-right text-[#A9A9A9] sp:text-spsmall">
+                      申請日時
                     </div>
                     <span className="mb-[7px] sp:text-spsmall">
                       {aData.date}

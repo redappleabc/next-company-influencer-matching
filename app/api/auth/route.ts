@@ -16,8 +16,7 @@ export async function POST(request: NextRequest) {
         `SELECT * FROM users where email = '${body.id}'`,
         (error, result) => {
           if (error) {
-            reject(error);
-            return;
+            return NextResponse.json({ type: "error" });
           }
           resolve(result);
         }
@@ -45,22 +44,19 @@ export async function POST(request: NextRequest) {
         `SELECT id FROM ${type} where userId = ${user.id}`,
         (error, result) => {
           if (error) {
-            reject(error);
-            return;
+            return NextResponse.json({ type: "error" });
           }
           resolve(result);
         }
       );
     });
     const targetId = result1[0].id;
-    connection.end();
     return NextResponse.json({
       type: "success",
       data: { ...user, targetId },
     });
   } catch (error) {
     console.error("Error creating table or inserting record:", error);
-    connection.end();
     return NextResponse.json({ error: error });
   }
 }

@@ -40,8 +40,7 @@ export async function GET() {
     const notification = await new Promise<RowType[]>((resolve, reject) => {
       connection.query(`SELECT * from notification `, (error, rows) => {
         if (error) {
-          reject(error);
-          return;
+          return NextResponse.json({ type: "error" });
         }
         resolve(rows);
       });
@@ -50,11 +49,9 @@ export async function GET() {
       notification.length === 0
         ? { companyNoti: "", newNoti: "", influencerNoti: "" }
         : notification[notification.length - 1];
-    connection.end();
     return NextResponse.json({ type: "success", data: last });
   } catch (error) {
     console.error("Error creating table or inserting record:", error);
-    connection.end();
     return NextResponse.json({ type: "error" });
   }
 }

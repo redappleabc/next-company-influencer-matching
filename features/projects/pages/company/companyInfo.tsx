@@ -109,7 +109,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
           <span className="text-title sp:text-sptitle">企業情報変更</span>
         </div>
       )}
-      <div className="flex items-center py-[15px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex items-center py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>企業名</span>
           {<span className="ml-[10px] text-[#EE5736] text-[11px]">必須</span>}
@@ -122,7 +122,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
           }}
         />
       </div>
-      <div className="flex items-center py-[15px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex items-center py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>企業名カナ</span>
           {<span className="ml-[10px] text-[#EE5736] text-[11px]">必須</span>}
@@ -135,7 +135,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
           }}
         />
       </div>
-      <div className="flex items-center py-[15px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex items-center py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>代表者名</span>
           {<span className="ml-[10px] text-[#EE5736] text-[11px]">必須</span>}
@@ -148,7 +148,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
           }}
         />
       </div>
-      <div className="flex items-center py-[15px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex items-center py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>代表者名カナ</span>
           {<span className="ml-[10px] text-[#EE5736] text-[11px]">必須</span>}
@@ -161,7 +161,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
           }}
         />
       </div>
-      <div className="flex items-center py-[15px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex items-center py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>担当者名</span>
           {<span className="ml-[10px] text-[#EE5736] text-[11px]">必須</span>}
@@ -174,7 +174,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
           }}
         />
       </div>
-      <div className="flex items-center py-[15px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex items-center py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>担当者名カナ</span>
           {<span className="ml-[10px] text-[#EE5736] text-[11px]">必須</span>}
@@ -187,7 +187,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
           }}
         />
       </div>
-      <div className="flex items-center py-[15px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex items-center py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>WEBサイト</span>
           {<span className="ml-[10px] text-[#EE5736] text-[11px]">必須</span>}
@@ -200,7 +200,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
           }}
         />
       </div>
-      <div className="flex items-center py-[15px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex items-center py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>電話番号</span>
           {<span className="ml-[10px] text-[#EE5736] text-[11px]">必須</span>}
@@ -213,7 +213,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
           }}
         />
       </div>
-      <div className="flex items-center py-[15px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex items-center py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>メールアドレス</span>
           {<span className="ml-[10px] text-[#EE5736] text-[11px]">必須</span>}
@@ -226,7 +226,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
           }}
         />
       </div>
-      <div className="flex items-center py-[15px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex items-center py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>郵便番号</span>
           {<span className="ml-[10px] text-[#EE5736] text-[11px]">必須</span>}
@@ -239,7 +239,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
           }}
         />
       </div>
-      <div className="flex items-center py-[15px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex items-center py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>住所</span>
           {<span className="ml-[10px] text-[#EE5736] text-[11px]">必須</span>}
@@ -252,7 +252,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
           }}
         />
       </div>
-      <div className="flex items-center py-[15px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div className="flex items-center py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>建物</span>
           {
@@ -271,7 +271,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
         />
       </div>
       {!applyMode && (
-        <div className="flex items-center py-[15px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+        <div className="flex items-center py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
           <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
             <span>決済</span>
           </span>
@@ -287,7 +287,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
         </div>
       )}
       {!applyMode && (
-        <div className="flex items-center py-[15px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+        <div className="flex items-center py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
           <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
             <span>登録日</span>
           </span>
@@ -297,7 +297,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
         </div>
       )}
       {!applyMode && (
-        <div className="flex items-center py-[15px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+        <div className="flex items-center py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
           <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
             <span>状態</span>
           </span>
@@ -363,6 +363,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
           <Button
             buttonType={ButtonType.DEFAULT}
             buttonClassName="rounded-[5px]"
+            handleClick={() => router.back()}
           >
             戻る
           </Button>

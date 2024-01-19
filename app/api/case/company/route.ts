@@ -8,8 +8,7 @@ export async function GET(request: NextRequest) {
     const rows = await new Promise((resolve, reject) => {
       connection.query(query, (error, rows) => {
         if (error) {
-          reject(error);
-          return;
+          return NextResponse.json({ type: "error" });
         }
         resolve(rows);
       });

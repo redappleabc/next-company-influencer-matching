@@ -55,6 +55,7 @@ export async function POST(request: NextRequest) {
       status VARCHAR(255) NOT NULL,
       collectionStatus VARCHAR(255) NOT NULL,
       date VARCHAR(255) NOT NULL,
+      reason VARCHAR(255) NOT NULL,
       companyId int,
       FOREIGN KEY (companyId) REFERENCES company(id)
     )
@@ -72,7 +73,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ type: "error", msg: "error" });
   }
 }
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const query = `SELECT cases.*, company.companyName
     FROM cases
@@ -82,8 +83,7 @@ export async function GET(request: NextRequest) {
     const rows = await new Promise((resolve, reject) => {
       connection.query(query, (error, rows) => {
         if (error) {
-          reject(error);
-          return;
+          return NextResponse.json({ type: "error" });
         }
         resolve(rows);
       });
