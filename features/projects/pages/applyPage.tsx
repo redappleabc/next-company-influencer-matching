@@ -19,6 +19,7 @@ export default function ApplyPage() {
     }
     const result = await axios.put("api/user", { email, type });
     if (result.data.type === "success") {
+      router.push("/applyConfirm");
     }
   };
   return (
@@ -33,7 +34,9 @@ export default function ApplyPage() {
             〇〇サービスをご覧いただきありがとうございます。
           </div>
           <div className="py-[10px]">
-            企業登録をご希望の方は以下から仮申請をしてください。
+            {type === "企業"
+              ? "企業登録をご希望の方は以下から仮申請をしてください。"
+              : "インフルエンサー登録をご希望の方は以下から仮申請をしてください。"}
           </div>
           <div className="py-[10px]">
             ご入力いただいたメールアドレス宛に申請フォームをお送りします。
@@ -42,6 +45,7 @@ export default function ApplyPage() {
         <div className="flex items-center justify-center py-[20px] w-[60%] sp:w-full m-auto">
           <div className="flex">
             <RadioBtn
+              defaultValue={type}
               handleChange={(val) => setType(val)}
               options={["企業", "インフルエンサー"]}
             />

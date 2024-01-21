@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import connection from "@/app/api/util/db.js";
+import { executeQuery } from "../../util/db";
 
 export async function GET(request: NextRequest) {
   try {
@@ -8,30 +8,29 @@ export async function GET(request: NextRequest) {
       FROM cases
       LEFT JOIN company ON cases.companyId=company.id 
       where cases.id = ${id}`;
-    const rows = await new Promise((resolve, reject) => {
-      connection.query(query, (error, rows) => {
-        if (error) {
-          return NextResponse.json({ type: "error" });
-        }
-        resolve(rows);
-      });
+    const rows = await executeQuery(query).catch((e) => {
+      return NextResponse.json({ type: "error" });
     });
     return NextResponse.json(rows[0]);
   } catch (error) {
     console.error("Error fetching data:", error);
-    return NextResponse.json({ error: error }, { status: 500 });
+    return NextResponse.json({ type: "error" });
   }
 }
 export async function PUT(request: NextRequest) {
   try {
     const id = request.nextUrl.searchParams.get("id") || "";
-    const { val, reason } = await request.json();
-    console.log(id, val);
-    const update = val ? "承認" : "否認";
-    const query = `UPDATE cases
+    const { update, reason, approveMode } = await request.json();
+    const query = approveMode
+      ? `UPDATE cases
     SET status = '${update}',reason = '${reason}'
+    WHERE id = ${id}`
+      : `UPDATE cases
+    SET status = '${update}'
     WHERE id = ${id}`;
-    const result = await connection.query(query);
+    console.log(query);
+
+    const result = await executeQuery(query);
     if (result) return NextResponse.json({ type: "success" });
     else return NextResponse.json({ type: "error" });
   } catch (error) {

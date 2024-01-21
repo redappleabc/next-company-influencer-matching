@@ -9,12 +9,10 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 
 export interface CompanyInfoProps {
-  companyData?: object;
   applyMode?: boolean;
 }
 
 const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
-  companyData,
   applyMode,
 }: CompanyInfoProps) => {
   const authUser = useRecoilValue(authUserState);

@@ -1,4 +1,4 @@
-import CollectedCasePage from "@/features/projects/pages/influencer/collectedCase";
+import CollectedCasePage from "@/features/projects/pages/influencer/collectingCase";
 
 function CellecctedCase() {
   return (

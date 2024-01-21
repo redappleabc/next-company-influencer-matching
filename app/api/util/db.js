@@ -59,4 +59,16 @@ connection.connect(async (error) => {
     );
   }
 });
-export default connection;
+
+export const executeQuery = async (query) => {
+  const result = await new Promise((resolve, reject) => {
+    connection.query(query, (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    });
+  });
+  return result;
+};

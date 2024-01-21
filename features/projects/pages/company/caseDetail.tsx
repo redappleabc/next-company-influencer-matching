@@ -4,16 +4,60 @@ import Checkbox from "@/components/atoms/checkbox";
 import SearchBar from "@/components/organisms/searchbar";
 import Button, { ButtonType } from "@/components/atoms/button";
 import Link from "next/link";
-import { useState } from "react";
+import ApplicationPage from "../admin/applicationPage";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useParams } from "next/navigation";
 
-export default function CaseDetailPage() {
+export interface caseData {
+  caseProps: Object;
+}
+
+export default function CaseDetailPage({ caseProps }: caseData) {
   const [active, setActive] = useState(null);
-
+  const [showModal, setShowModal] = useState(false);
+  const [caseData, setCaseData] = useState(null);
+  const [startable, setStartable] = useState(false);
+  const [statusTemp, setStatusTemp] = useState("");
+  useEffect(() => {
+    setCaseData(caseProps);
+    setStatusTemp(caseProps.status);
+    resetStartable(caseProps.status);
+  }, [caseProps]);
+  const { id } = useParams();
   const onItemClick = ({ idx }: { idx: Number }) => {
     if (active === idx) {
       setActive(null);
     } else {
       setActive(idx);
+    }
+  };
+  const resetStartable = (currentStatus) => {
+    if (currentStatus === "否認") {
+      setStartable(false);
+      return;
+    }
+    if (currentStatus === "募集中" || currentStatus === "停止中") {
+      setStartable(false);
+      return;
+    }
+    setStartable(true);
+  };
+  const handleCollectionStateChange = async (state: string) => {
+    const update = state;
+    if (state === "募集中") {
+      if (caseData.status === "否認") return;
+    }
+    if (state !== "募集中") {
+      if (caseData.status === "否認") return;
+    }
+    const result = await axios.put(`/api/case/aCase/?id=${id}`, {
+      update,
+      approveMode: false,
+    });
+    if (result.data.type === "success") {
+      setStatusTemp(state);
+      resetStartable(state);
     }
   };
   const data = [
@@ -48,31 +92,77 @@ export default function CaseDetailPage() {
   ];
   return (
     <div>
+      {showModal && (
+        <div className="bg-black bg-opacity-25 w-full h-full fixed left-0 overflow-auto">
+          <div>
+            <ApplicationPage
+              modalMode
+              companyMode
+              onCancel={() => setShowModal(false)}
+            />
+          </div>
+        </div>
+      )}
       <div className="px-[30px] sp:px-[12px] pt-[110px] pb-[30px]">
         <div className="text-title sp:hidden">募集案件詳細</div>
         <SearchBar
           title={
             <div className="flex flex-wrap items-center gap-x-[20px]">
-              <span className="text-[#3F8DEB] underline hover:cursor-pointer underline-offset-3">
+              <span
+                className="text-[#3F8DEB] underline hover:cursor-pointer underline-offset-3"
+                onClick={() => setShowModal(true)}
+              >
                 案件詳細
               </span>
-              <span>状態：募集中</span>
+              <span className="w-[100px]">{`状態: ${statusTemp}`}</span>
               <span className="flex flex-wrap">
-                <span>募集期間：2023/11/01 11:11 ～</span>
-                <span> 2023/11/10 11:11</span>
+                <span>{`募集期間：${caseData?.collectionStart} ～`}</span>
+                <span>{caseData?.collectionEnd}</span>
               </span>
-              <Button
-                buttonType={ButtonType.DANGER}
-                buttonClassName="rounded-[0px] px-[15px] py-[7px]"
-              >
-                募集終了
-              </Button>
-              <Button
-                buttonType={ButtonType.DEFAULT}
-                buttonClassName="rounded-[0px]"
-              >
-                停止
-              </Button>
+
+              {startable ? (
+                <Button
+                  buttonType={ButtonType.PRIMARY}
+                  buttonClassName="rounded-[0px] px-[15px] py-[7px]"
+                  handleClick={() => {
+                    handleCollectionStateChange("募集中");
+                  }}
+                >
+                  募集開始
+                </Button>
+              ) : (
+                <Button
+                  buttonType={ButtonType.DANGER}
+                  buttonClassName="rounded-[0px] px-[15px] py-[7px]"
+                  handleClick={() => {
+                    handleCollectionStateChange("募集終了");
+                  }}
+                >
+                  募集終了
+                </Button>
+              )}
+              {statusTemp !== "停止中" && (
+                <Button
+                  buttonType={ButtonType.DEFAULT}
+                  buttonClassName="rounded-[0px]"
+                  handleClick={() => {
+                    handleCollectionStateChange("停止中");
+                  }}
+                >
+                  停止
+                </Button>
+              )}
+              {statusTemp === "停止中" && (
+                <Button
+                  buttonType={ButtonType.DEFAULT}
+                  buttonClassName="rounded-[0px]"
+                  handleClick={() => {
+                    handleCollectionStateChange("再開");
+                  }}
+                >
+                  再開
+                </Button>
+              )}
             </div>
           }
           extendChild={

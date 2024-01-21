@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import connection from "@/app/api/util/db.js";
 import { RowDataPacket } from "mysql";
+import { executeQuery } from "../../util/db";
 interface RowType extends RowDataPacket {
   // Define the structure of your row
   id: number;
@@ -26,13 +26,8 @@ export async function GET(request: NextRequest) {
     const id = request.nextUrl.searchParams.get("id") || "";
 
     const query = `SELECT * FROM company where id = ${id}`;
-    const rows = await new Promise<RowType[]>((resolve, reject) => {
-      connection.query(query, (error, rows) => {
-        if (error) {
-          return NextResponse.json({ type: "error" });
-        }
-        resolve(rows);
-      });
+    const rows = await executeQuery(query).catch((e) => {
+      return NextResponse.json({ type: "error" });
     });
     return NextResponse.json(rows[0]);
   } catch (error) {

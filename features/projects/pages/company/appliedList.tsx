@@ -117,7 +117,7 @@ export default function AppliedList() {
                   {aData.collectionEnd}
                 </td>
                 <td className="py-[25px]  border border-[#D3D3D3]">
-                  <Link href={"/caseDetail"}>
+                  <Link href={`/caseDetail/${aData.id}`}>
                     <img
                       src="/img/detail.svg"
                       alt="detail"

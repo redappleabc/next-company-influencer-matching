@@ -8,12 +8,14 @@ import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 export interface ApplicatinProps {
-  isInfluencerMode?: boolean;
+  modalMode?: boolean;
+  companyMode?: boolean;
   onCancel?: () => void;
 }
 
 const ApplicationPage: React.FC<ApplicatinProps> = ({
-  isInfluencerMode,
+  modalMode,
+  companyMode,
   onCancel,
 }: ApplicatinProps) => {
   const [data, setData] = useState(null);
@@ -38,9 +40,11 @@ const ApplicationPage: React.FC<ApplicatinProps> = ({
         setError("否認理由を入力してください");
         return;
       }
+      const update = val ? "承認" : "否認";
       const result = await axios.put(`/api/case/aCase/?id=${id}`, {
-        val,
+        update,
         reason: reason1,
+        approveMode: true,
       });
       if (result.data.type === "success") {
         router.back();
@@ -50,22 +54,22 @@ const ApplicationPage: React.FC<ApplicatinProps> = ({
     };
     approveApplication();
   };
-  const widthClass = isInfluencerMode ? "" : "w-[40%]";
-  const topClass = isInfluencerMode ? " pt-[50px]" : "";
+  const widthClass = modalMode ? "" : "w-[40%]";
+  const topClass = modalMode ? " pt-[50px]" : "";
   return (
     <div
       className={
-        isInfluencerMode
-          ? "text-center bg-[white] px-[35px] sp:px-[12px] sp:text-small w-[40%] sp:w-[90%] m-auto relative"
+        modalMode
+          ? "text-center bg-[white]  px-[35px] sp:px-[12px] sp:text-small w-[40%] sp:w-[90%] m-auto relative"
           : "text-center bg-[white] px-[35px] sp:px-[12px] sp:text-small "
       }
     >
-      {!isInfluencerMode && (
+      {!modalMode && (
         <div className="flex items-center py-[20px]  w-[full] border-b-[1px] border-[#DDDDDD] mt-[70px] sp:mt-[96px]">
           <span className="text-title sp:text-sptitle">{data?.caseName}</span>
         </div>
       )}
-      {isInfluencerMode && (
+      {modalMode && (
         <button
           className="absolute bg-[#5E5E5E] text-[white] px-[15px] py-[10px] top-0 right-0 cursor-pointer"
           onClick={(e) => {
@@ -85,14 +89,14 @@ const ApplicationPage: React.FC<ApplicatinProps> = ({
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span className="text-[#6F6F6F]">企業名</span>
         </span>
-        {!isInfluencerMode && (
+        {!modalMode && (
           <Link href={`/company/${data?.companyId}`}>
             <span className="text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
               {data?.companyName}
             </span>
           </Link>
         )}
-        {isInfluencerMode && <span>{data?.companyName}</span>}
+        {modalMode && <span>{data?.companyName}</span>}
       </div>
       <div
         className={
@@ -240,7 +244,7 @@ const ApplicationPage: React.FC<ApplicatinProps> = ({
         </span>
         <div className="text-left">{data?.addition}</div>
       </div>
-      {!isInfluencerMode && (
+      {!modalMode && (
         <div
           className={
             "flex  py-[20px]  sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] " +
@@ -260,7 +264,7 @@ const ApplicationPage: React.FC<ApplicatinProps> = ({
           />
         </div>
       )}
-      {!isInfluencerMode && (
+      {!modalMode && (
         <div
           className={
             "flex  py-[20px]  sp:w-full m-auto  sp:px-[18px] justify-end " +
@@ -276,7 +280,7 @@ const ApplicationPage: React.FC<ApplicatinProps> = ({
         </div>
       )}
       {error !== "" && <div className="m-[10px] text-[#EE5736]">{error}</div>}
-      {!isInfluencerMode && (
+      {!modalMode && (
         <div className="flex justify-center mt-[36px] mb-[160px] sp:mb-[60px]">
           <Button
             buttonType={ButtonType.PRIMARY}
@@ -315,10 +319,23 @@ const ApplicationPage: React.FC<ApplicatinProps> = ({
           </Button>
         </div>
       )}
-      {isInfluencerMode && (
+      {modalMode && !companyMode && (
         <Button buttonType={ButtonType.PRIMARY} buttonClassName="m-[30px]">
           <span className="flex items-center">
             <span>応募</span>
+          </span>
+        </Button>
+      )}
+      {modalMode && companyMode && (
+        <Button
+          buttonType={ButtonType.PRIMARY}
+          buttonClassName="m-[30px]"
+          handleClick={() => {
+            if (onCancel) onCancel();
+          }}
+        >
+          <span className="flex items-center">
+            <span>確認</span>
           </span>
         </Button>
       )}

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import connection from "@/app/api/util/db.js";
+import { executeQuery } from "@/app/api/util/db.js";
 import { RowDataPacket } from "mysql";
 interface RowType extends RowDataPacket {
   // Define the structure of your row
@@ -28,6 +28,8 @@ export async function POST(request: NextRequest) {
     }/${today.getDate()}`;
     const defaultValues = {
       date: todayString,
+      status: "申請中",
+      collectionStatus: "募集前",
     };
     body = { ...body, ...defaultValues };
     let query1 = "";
@@ -38,7 +40,7 @@ export async function POST(request: NextRequest) {
       query2 += "'" + body[aKey] + "',";
     });
     // insertQuery += `'${body["ds"]}'`;
-    await connection.query(`
+    await executeQuery(`
     CREATE TABLE IF NOT EXISTS cases (
       id INT AUTO_INCREMENT PRIMARY KEY,
       caseType VARCHAR(255) NOT NULL,
@@ -66,7 +68,7 @@ export async function POST(request: NextRequest) {
       -1
     )}) VALUES(${query2.slice(0, -1)})`;
 
-    const result = await connection.query(query);
+    const result = await executeQuery(query);
     return NextResponse.json({ type: "success" });
   } catch (error) {
     console.error("Error creating table or inserting record:", error);
@@ -80,18 +82,13 @@ export async function GET() {
     LEFT JOIN company ON cases.companyId=company.id
     ORDER BY cases.id;`;
     // const query = `SELECT * FROM cases`;
-    const rows = await new Promise((resolve, reject) => {
-      connection.query(query, (error, rows) => {
-        if (error) {
-          return NextResponse.json({ type: "error" });
-        }
-        resolve(rows);
-      });
+    const rows = await executeQuery(query).catch((e) => {
+      return NextResponse.json({ type: "error" });
     });
     return NextResponse.json(rows);
   } catch (error) {
     console.error("Error fetching data:", error);
-    return NextResponse.json({ error: error }, { status: 500 });
+    return NextResponse.json({ type: "error" });
   }
 }
 export async function PUT(request: NextRequest) {
@@ -101,17 +98,17 @@ export async function PUT(request: NextRequest) {
     const keys = Object.keys(body);
 
     keys.map((aKey) => {
-      if (aKey !== "id" && aKey !== "companyId") {
+      if (aKey !== "id" && aKey !== "companyId" && aKey !== "companyName") {
         query += `${aKey} = '${body[aKey]}', `;
       }
     });
     query = query.slice(0, -2);
     query += " ";
     query += `WHERE id = ${body.id}`;
-    const result = await connection.query(query);
+    executeQuery(query);
     return NextResponse.json({ type: "success" });
   } catch (error) {
     console.error("Error fetching data:", error);
-    return NextResponse.json({ type: "error", msg: "no table exists" });
+    return NextResponse.json({ type: "error" });
   }
 }

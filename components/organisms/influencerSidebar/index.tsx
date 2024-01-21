@@ -12,7 +12,7 @@ export default function InfluencerSidebar() {
           応募案件一覧
         </div>
         <div className="p-[12px] text-[14px]">
-          <Link href={"/collectedCase"}>募集中案件一覧</Link>
+          <Link href={"/collectingCase"}>募集中案件一覧</Link>
         </div>
         <div className="p-[12px] text-[14px]">
           {/* <Link href={"/chatting"}>チャット </Link> */}チャット
@@ -27,6 +27,9 @@ export default function InfluencerSidebar() {
       <div className="pt-[20px] pb-[30px]">
         <div className="p-[12px] text-[14px]">
           <Link href={"/ask"}>マニュアル</Link>
+        </div>
+        <div className="p-[12px] text-[14px]">
+          <Link href={"/ask"}>運営へのお問い合わせ</Link>
         </div>
       </div>
     </div>
