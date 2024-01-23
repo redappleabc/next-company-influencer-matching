@@ -1,162 +1,331 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import Button, { ButtonType } from "@/components/atoms/button";
 import Input from "@/components/atoms/input";
 import Select from "@/components/atoms/select";
+import axios from "axios";
 
 export interface InfluencerProps {
   influencerData?: object;
+  modalMode?: boolean;
+  onCancel?: () => void;
+  handleApprove?: (val: string) => void;
 }
 
 const InfluencerPage: React.FC<InfluencerProps> = ({
   influencerData,
+  modalMode,
+  onCancel,
+  handleApprove,
 }: InfluencerProps) => {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    setData(influencerData);
+  }, [influencerData]);
+  const handleUpdate = async () => {
+    const result = await axios.put("/api/influencer", data);
+    console.log(result);
+  };
+  const className = modalMode ? "w-[90%]" : "w-[50%]";
   return (
-    <div className="text-center bg-[white] px-[35px] sp:px-[12px] sp:text-small ">
-      <div className="flex items-center py-[20px]  w-[full] border-b-[1px] border-[#DDDDDD] mt-[70px] sp:mt-[96px]">
-        <span className="text-title sp:text-sptitle">ユニティー</span>
-      </div>
-      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD] mt-[90px] sp:mt-[30px]   sp:px-[18px]">
-        <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
+    <div
+      className={
+        modalMode
+          ? "text-center bg-[white]  px-[35px] sp:px-[12px] sp:text-small w-[40%] sp:w-[90%] m-auto relative shadow-lg "
+          : "text-center bg-[white] px-[35px] sp:px-[12px] sp:text-small "
+      }
+    >
+      {!modalMode && (
+        <div className="flex items-center py-[20px]  w-[full] border-b-[1px] border-[#DDDDDD] mt-[70px] sp:mt-[96px]">
+          <span className="text-title sp:text-sptitle">{data?.nickName}</span>
+        </div>
+      )}
+      {modalMode && (
+        <button
+          className="absolute bg-[#5E5E5E] text-[white] px-[15px] py-[10px] top-0 right-0 cursor-pointer"
+          onClick={(e) => {
+            if (onCancel) onCancel();
+          }}
+        >
+          x
+        </button>
+      )}
+      <div
+        className={`flex items-center py-[20px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD] mt-[90px] sp:mt-[30px] sp:px-[18px] ${className}`}
+      >
+        <span
+          className={
+            modalMode
+              ? "w-[35%] sp:w-[100px] pt-[20px] flex justify-end sp:justify-start  mr-[67px]"
+              : "w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]"
+          }
+        >
           <span className="text-[#6F6F6F]">お名前</span>
         </span>
-        <span>山田太郎</span>
+        <span>{data?.influencerName}</span>
       </div>
-      <div className="flex items-center py-[15px] w-[50%]  sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div
+        className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
+      >
+        <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
+          <span className="text-[#6F6F6F]">名前ガーナ</span>
+        </span>
+        <span>{data?.influencerNameGana}</span>
+      </div>
+      <div
+        className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
+      >
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span className="text-[#6F6F6F]">性別</span>
         </span>
-        <Select selectClassName="w-[138px] border-[#D3D3D3]">
-          <option>女性</option>
-          <option>男性</option>
-          <option>その他</option>
-        </Select>{" "}
+        {data?.gender}
       </div>
-      <div className="flex items-center py-[20px] w-[50%]  sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
-        <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
-          <span className="text-[#6F6F6F]">企業名カナ</span>
-        </span>
-        <span>ヤマダタロウ</span>
-      </div>
-      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div
+        className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
+      >
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span className="text-[#6F6F6F]">ニックネーム</span>
         </span>
-        <span>ユニティ</span>
+        <span>{data?.nickName}</span>
       </div>
-      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div
+        className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
+      >
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span className="text-[#6F6F6F]">電話番号</span>
         </span>
-        <span>090-9999-9999090-9999-9999</span>
+        <span>{data?.phoneNumber}</span>
       </div>
-      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div
+        className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
+      >
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>メールアドレス</span>
         </span>
-        <Input
-          inputClassName="max-w-[250px] grow border-[#D3D3D3] w-[100%]"
-          value="yamada@abc.co.jp"
-        />
+        {modalMode ? (
+          <span>{data?.emailAddress}</span>
+        ) : (
+          <Input
+            handleChange={(val) => setData({ ...data, emailAddress: val })}
+            inputClassName="max-w-[250px] grow border-[#D3D3D3] w-[100%]"
+            value={data?.emailAddress}
+          />
+        )}
       </div>
-      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div
+        className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
+      >
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
-          <span className="text-[#6F6F6F]">住所</span>
+          <span className="text-[#6F6F6F]">都道府県</span>
         </span>
-        <span>東京都</span>
+        <span>{data?.prefecture}</span>
       </div>
-      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
-        <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
+      <div
+        className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
+      >
+        <span className="w-[35%] mt-[5px] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span className="text-[#6F6F6F]">ジャンル</span>
         </span>
-        <span>美容・コスメ系,アパレル・ファッション系</span>
+        <div className="text-left">
+          {data?.genre
+            ? JSON.parse(data?.genre).map((a, key) => <div key={key}>{a}</div>)
+            : ""}
+        </div>
       </div>
-      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div
+        className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
+      >
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span className="hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
-            Instagram
+            {data?.instagram ? (
+              <a href={JSON.parse(data?.instagram).account} target="_blank">
+                Instagram
+              </a>
+            ) : (
+              "Instagram"
+            )}
           </span>
         </span>
-        <span>フォロワー数：1,001～3,000</span>
+        <span>{`フォロワー数：${
+          data?.instagram ? JSON.parse(data?.instagram).followers : ""
+        }`}</span>
       </div>
-      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div
+        className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
+      >
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span className="hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
-            X
+            {data?.x ? (
+              <a href={JSON.parse(data?.x).account} target="_blank">
+                x
+              </a>
+            ) : (
+              "x"
+            )}
           </span>
         </span>
-        <span>フォロワー数：1,001～3,000</span>
+        <span>{`フォロワー数：${
+          data?.x ? JSON.parse(data?.x).followers : ""
+        }`}</span>{" "}
       </div>
-      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div
+        className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
+      >
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span className="hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
-            facebook
+            {data?.facebook ? (
+              <a href={JSON.parse(data?.facebook).account} target="_blank">
+                facebook
+              </a>
+            ) : (
+              "facebook"
+            )}
           </span>
         </span>
-        <span>フォロワー数：1,001～3,000</span>
+        <span>{`フォロワー数：${
+          data?.facebook ? JSON.parse(data?.facebook).followers : ""
+        }`}</span>{" "}
       </div>
-      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div
+        className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
+      >
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span className="hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
-            tiktok
+            {data?.tiktok ? (
+              <a href={JSON.parse(data?.tiktok).account} target="_blank">
+                tiktok
+              </a>
+            ) : (
+              "tiktok"
+            )}
           </span>
         </span>
-        <span>フォロワー数：1,001～3,000</span>
+        <span>{`フォロワー数：${
+          data?.facebook ? JSON.parse(data?.facebook).followers : ""
+        }`}</span>{" "}
       </div>
-      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div
+        className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
+      >
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span className="hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
-            YouTube
+            {data?.youtube ? (
+              <a href={JSON.parse(data?.youtube).account} target="_blank">
+                youtube
+              </a>
+            ) : (
+              "youtube"
+            )}
           </span>
         </span>
-        <span>フォロワー数：1,001～3,000</span>
+        <span>{`フォロワー数：${
+          data?.facebook ? JSON.parse(data?.facebook).followers : ""
+        }`}</span>{" "}
       </div>
-      <div className="flex py-[20px] w-[50%]  sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+      <div
+        className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
+      >
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span className="text-[#6F6F6F]">その他</span>
         </span>
         <div>
-          <div>LINE公式アカウントのお友達1000人</div>
-          <div>スナップチャットフォロワー1000人</div>
+          {data?.otherSNS
+            ? data?.otherSNS
+                .split("\n")
+                ?.map((a, key) => <div key={key}>{a}</div>)
+            : ""}
         </div>
       </div>
-      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
-        <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
-          <span>登録日</span>
-        </span>
-        <div>2023/01/01</div>
-      </div>
-      <div className="flex items-center py-[20px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
-        <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
-          <span>申請日時</span>
-        </span>
-        <div>2023/01/01 11:11</div>
-      </div>
-      <div className="flex items-center py-[15px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
-        <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
-          <span>状態</span>
-        </span>
-        <Select selectClassName="w-[138px] border-[#D3D3D3]">
-          <option>承認待ち</option>
-          <option>稼動中</option>
-          <option>停止中</option>
-        </Select>
-      </div>
-
-      <div className="flex justify-center mt-[36px] mb-[160px] sp:mb-[60px]">
-        <Button buttonType={ButtonType.PRIMARY} buttonClassName="mr-[30px]">
-          <span className="flex items-center">
-            <span>更新</span>
-            <img
-              className="w-[14px] ml-[5px]"
-              src="/img/refresh.svg"
-              alt="refresh"
-            />
+      {!modalMode && (
+        <div
+          className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
+        >
+          <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
+            <span>登録日</span>
           </span>
-        </Button>
-        <Button buttonType={ButtonType.DEFAULT} buttonClassName="rounded-[5px]">
-          戻る
-        </Button>
-      </div>
+          <div>{data?.date}</div>
+        </div>
+      )}
+      {!modalMode && (
+        <div
+          className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
+        >
+          <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
+            <span>申請日時</span>
+          </span>
+          <div>2023/01/01 11:11</div>
+        </div>
+      )}
+      {!modalMode && (
+        <div className="flex items-center py-[15px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+          <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
+            <span>状態</span>
+          </span>
+          <Select
+            handleChange={(val) => setData({ ...data, status: val })}
+            value={data?.status}
+            selectClassName="w-[138px] border-[#D3D3D3]"
+          >
+            <option>承認待ち</option>
+            <option>稼動中</option>
+            <option>停止中</option>
+          </Select>
+        </div>
+      )}
+
+      {!modalMode && (
+        <div className="flex justify-center mt-[36px] mb-[160px] sp:mb-[60px]">
+          <Button
+            buttonType={ButtonType.PRIMARY}
+            handleClick={handleUpdate}
+            buttonClassName="mr-[30px]"
+          >
+            <span className="flex items-center">
+              <span>更新</span>
+              <img
+                className="w-[14px] ml-[5px]"
+                src="/img/refresh.svg"
+                alt="refresh"
+              />
+            </span>
+          </Button>
+          <Button
+            buttonType={ButtonType.DEFAULT}
+            buttonClassName="rounded-[5px]"
+          >
+            戻る
+          </Button>
+        </div>
+      )}
+      {modalMode && (
+        <div className="flex justify-center mt-[36px] pb-[30px] sp:mb-[60px]">
+          <Button
+            buttonType={ButtonType.PRIMARY}
+            handleClick={() => handleApprove("承認")}
+            buttonClassName="mr-[30px]"
+          >
+            <span className="flex items-center">
+              <span>承認</span>
+            </span>
+          </Button>
+          <Button
+            buttonType={ButtonType.DANGER}
+            handleClick={() => handleApprove("否決")}
+            buttonClassName="mr-[30px]"
+          >
+            <span className="flex items-center">
+              <span>否決</span>
+            </span>
+          </Button>
+          <Button
+            handleClick={() => onCancel()}
+            buttonType={ButtonType.DEFAULT}
+            buttonClassName="rounded-[5px]"
+          >
+            戻る
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

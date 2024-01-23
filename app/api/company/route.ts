@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     let query1 = "";
     let query2 = "";
     const keys = Object.keys(body);
-    keys.map((aKey) => {
+    keys?.map((aKey) => {
       query1 += aKey + ",";
       query2 += "'" + body[aKey] + "',";
     });
@@ -105,7 +105,7 @@ export async function PUT(request: NextRequest) {
       body.freeAccount == 1 || body.freeAccount == true ? 1 : 0;
     console.log("fre", body.freeAccount, freeAccount);
 
-    keys.map((aKey) => {
+    keys?.map((aKey) => {
       if (aKey !== "id" && aKey !== "userId") {
         if (aKey === "freeAccount") {
           query += `${aKey} = ${freeAccount}, `;

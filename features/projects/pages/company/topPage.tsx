@@ -2,7 +2,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-export default function TopPage() {
+export interface topProps {
+  influencerMode?: boolean;
+}
+
+export default function TopPage({ influencerMode }: topProps) {
   const [data, setData] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
@@ -19,20 +23,26 @@ export default function TopPage() {
         <span className="text-title sp:text-sptitle">管理画面TOP</span>
       </div>
       <div className="sp:w-[100%] mt-[55px] px-[30px]">
-        <div className="border-b-[1px] border-[#DDDDDD] mx-[30px]">
-          <span className="text-header text-[#EE5736] ">重要なお知らせ</span>
-          <div className="py-[30px]">
-            {data?.mainNoti.split("\n").map((a, key) => (
-              <div key={key}>{a}</div>
-            ))}
+        {!influencerMode && (
+          <div className="border-b-[1px] border-[#DDDDDD] mx-[30px]">
+            <span className="text-header text-[#EE5736] ">重要なお知らせ</span>
+            <div className="py-[30px]">
+              {data?.mainNoti.split("\n")?.map((a, key) => (
+                <div key={key}>{a}</div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
         <div className="mx-[30px] mt-[40px]">
           <span className="text-header ">運営からのお知らせ</span>
           <div className="py-[30px]">
-            {data?.influencerNoti.split("\n").map((a, key) => (
-              <div key={key}>{a}</div>
-            ))}
+            {influencerMode
+              ? data?.influencerNoti
+                  .split("\n")
+                  ?.map((a, key) => <div key={key}>{a}</div>)
+              : data?.companyNoti
+                  .split("\n")
+                  ?.map((a, key) => <div key={key}>{a}</div>)}
           </div>
         </div>
       </div>

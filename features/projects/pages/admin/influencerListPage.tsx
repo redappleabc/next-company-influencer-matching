@@ -2,12 +2,13 @@
 
 import Checkbox from "@/components/atoms/checkbox";
 import SearchBar from "@/components/organisms/searchbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import axios from "axios";
 
 export default function InfluencerListPage() {
   const [active, setActive] = useState(null);
-
+  const [data, setData] = useState([]);
   const onItemClick = ({ idx }: { idx: Number }) => {
     if (active === idx) {
       setActive(null);
@@ -15,43 +16,15 @@ export default function InfluencerListPage() {
       setActive(idx);
     }
   };
-  const data = [
-    {
-      nickName: "ユニティー",
-      name: "山田 太郎",
-      status: "稼働中",
-      sns: "未登録",
-      date: "2023/01/01",
-    },
-    {
-      nickName: "ユニティー",
-      name: "山田 太郎",
-      status: "稼働中",
-      sns: "未登録",
-      date: "2023/01/01",
-    },
-    {
-      nickName: "ユニティー",
-      name: "山田 太郎",
-      status: "稼働中",
-      sns: "未登録",
-      date: "2023/01/01",
-    },
-    {
-      nickName: "ユニティー",
-      name: "山田 太郎",
-      status: "稼働中",
-      sns: "未登録",
-      date: "2023/01/01",
-    },
-    {
-      nickName: "ユニティー",
-      name: "山田 太郎",
-      status: "稼働中",
-      sns: "未登録",
-      date: "2023/01/01",
-    },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios.get("/api/influencer");
+      if (result) {
+        setData(result.data);
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <div>
       <div className="px-[30px] sp:px-[12px] pt-[110px] pb-[30px]">
@@ -151,38 +124,50 @@ export default function InfluencerListPage() {
             </tr>
           </thead>
           <tbody>
-            {data.map((aData, idx) => (
+            {data?.map((aData, idx) => (
               <tr key={idx}>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3] hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
-                  <Link href={"/influencer"}>{aData.nickName}</Link>
+                  <Link href={`/influencer/${aData.id}`}>{aData.nickName}</Link>
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3] ">
-                  {aData.name}
+                  {aData.influencerName}
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3]">
                   <div className="flex items-center gap-[15px]">
-                    <img
-                      className="w-[35px]"
-                      src="/img/sns/Instagram.svg"
-                      alt="instagram"
-                    />
-                    <img
-                      className="w-[35px]"
-                      src="/img/sns/tiktok.svg"
-                      alt="tiktok"
-                    />
-                    <img className="w-[35px]" src="/img/sns/x.svg" alt="x" />
-                    <img
-                      className="w-[35px]"
-                      src="/img/sns/youtube.svg"
-                      alt="youtube"
-                    />
-                    <img
-                      className="w-[35px]"
-                      src="/img/sns/facebook.svg"
-                      alt="facebook"
-                    />
-                    <span className="text-[#C0C0C0]">etc.</span>
+                    {aData.instagram && (
+                      <img
+                        className="w-[35px]"
+                        src="/img/sns/Instagram.svg"
+                        alt="instagram"
+                      />
+                    )}
+                    {aData.tiktok && (
+                      <img
+                        className="w-[35px]"
+                        src="/img/sns/tiktok.svg"
+                        alt="tiktok"
+                      />
+                    )}
+                    {aData.x && (
+                      <img className="w-[35px]" src="/img/sns/x.svg" alt="x" />
+                    )}
+                    {aData.youtube && (
+                      <img
+                        className="w-[35px]"
+                        src="/img/sns/youtube.svg"
+                        alt="youtube"
+                      />
+                    )}
+                    {aData.facebook && (
+                      <img
+                        className="w-[35px]"
+                        src="/img/sns/facebook.svg"
+                        alt="youtube"
+                      />
+                    )}
+                    {aData.otherSNS !== "" && (
+                      <span className="text-[#C0C0C0]">etc.</span>
+                    )}
                   </div>
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3]">
@@ -196,7 +181,7 @@ export default function InfluencerListPage() {
           </tbody>
         </table>
         <div className="lg:hidden">
-          {data.map((aData, idx) => (
+          {data?.map((aData, idx) => (
             <div
               key={idx}
               className=" bg-[#F8F9FA] border border-[#D3D3D3]"

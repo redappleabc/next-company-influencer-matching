@@ -14,7 +14,7 @@ export default function ResetPasswordPage() {
         <span className="my-[30px]">
           パスワード変更するIDを入力してください
         </span>
-        <div className="flex justify-center w-full items-center mt-[30px] mb-[20px] pr-[70px] sp:pr-[30px] sp:mb-[30px]">
+        <div className="flex justify-center w-full  mt-[30px] mb-[20px] pr-[70px] sp:pr-[30px] sp:mb-[30px]">
           <span className="mr-[20px] w-[70px] text-right">ID</span>
           <Input inputClassName={"max-w-[250px] grow"} />
         </div>

@@ -1,24 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { executeQuery } from "@/app/api/util/db.js";
-import { RowDataPacket } from "mysql";
-interface RowType extends RowDataPacket {
-  // Define the structure of your row
-  id: number;
-  caseType: string;
-  caseName: string;
-  caseContent: string;
-  wantedHashTag: string;
-  wantedSNS: string;
-  casePlace: string;
-  collectionStart: string;
-  collectionEnd: string;
-  caseEnd: string;
-  collectionCnt: string;
-  addtion: string;
-  status: string;
-  date: string;
-  // Add any other fields you have in your table
-}
+import { executeQuery } from "../util/db";
+
 export async function POST(request: NextRequest) {
   try {
     let body = await request.json();
@@ -27,8 +9,8 @@ export async function POST(request: NextRequest) {
       today.getMonth() + 1
     }/${today.getDate()}`;
     const defaultValues = {
+      status: "申請中",
       date: todayString,
-      collectionStatus: "募集前",
     };
     body = { ...body, ...defaultValues };
     let query1 = "";
@@ -40,34 +22,23 @@ export async function POST(request: NextRequest) {
     });
     // insertQuery += `'${body["ds"]}'`;
     await executeQuery(`
-    CREATE TABLE IF NOT EXISTS cases (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      caseType VARCHAR(255) NOT NULL,
-      caseName VARCHAR(255) NOT NULL,
-      caseContent VARCHAR(255) NOT NULL,
-      wantedHashTag VARCHAR(255) NOT NULL,
-      wantedSNS VARCHAR(255) NOT NULL,
-      casePlace VARCHAR(255) NOT NULL,
-      collectionStart VARCHAR(255) NOT NULL,
-      collectionEnd VARCHAR(255) NOT NULL,
-      caseEnd VARCHAR(255) NOT NULL,
-      collectionCnt VARCHAR(255) NOT NULL,
-      addition VARCHAR(255) NOT NULL,
-      status VARCHAR(255) NOT NULL,
-      collectionStatus VARCHAR(255) NOT NULL,
-      date VARCHAR(255) NOT NULL,
-      reason VARCHAR(255) NOT NULL,
-      companyId int,
-      FOREIGN KEY (companyId) REFERENCES company(id)
-    )
-  `);
+      CREATE TABLE IF NOT EXISTS apply (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        caseId int,
+        influencerId int,        
+        date VARCHAR(255),
+        status VARCHAR(255), 
+        FOREIGN KEY (caseId) REFERENCES cases(id),
+        FOREIGN KEY (influencerId) REFERENCES influencer(id)
+      )
+    `);
     console.log("Table created successfully!");
-    const query = `INSERT INTO cases (${query1.slice(
+    const query = `INSERT INTO apply (${query1.slice(
       0,
       -1
     )}) VALUES(${query2.slice(0, -1)})`;
 
-    const result = await executeQuery(query).catch((e) => {
+    await executeQuery(query).catch((e) => {
       return NextResponse.json({ type: "error", msg: "error" });
     });
     return NextResponse.json({ type: "success" });
@@ -76,13 +47,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ type: "error", msg: "error" });
   }
 }
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const query = `SELECT cases.*, company.companyName
-    FROM cases
-    LEFT JOIN company ON cases.companyId=company.id
-    ORDER BY cases.id DESC`;
-    // const query = `SELECT * FROM cases`;
+    const id = request.nextUrl.searchParams.get("id") || "";
+    //   LEFT JOIN cases ON apply.companyId = company.id
+    // `SELECT apply.*, cases.*
+    // FROM apply
+    // LEFT JOIN apply ON apply.caseId = cases.id
+    // ORDER BY apply.id DESC`
+    const query = `SELECT apply.*, cases.caseName,cases.caseType,cases.casePlace ,company.companyName
+      FROM apply
+      LEFT JOIN cases ON apply.caseId = cases.id
+      LEFT JOIN company ON cases.companyId = company.id
+      ORDER BY apply.id DESC`;
     const rows = await executeQuery(query).catch((e) => {
       return NextResponse.json({ type: "error" });
     });
@@ -95,11 +72,11 @@ export async function GET() {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    let query = "UPDATE cases SET ";
+    let query = "UPDATE apply SET ";
     const keys = Object.keys(body);
 
     keys?.map((aKey) => {
-      if (aKey !== "id" && aKey !== "companyId" && aKey !== "companyName") {
+      if (aKey !== "id") {
         query += `${aKey} = '${body[aKey]}', `;
       }
     });

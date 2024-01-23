@@ -18,6 +18,9 @@
 /* *{
   transition-duration: 7000ms;
 } */
+/* .datetime-input::placeholder {
+  color: gray;
+} */
 body {
   color: rgb(var(--foreground-rgb));
   background-color: #F5F5F5;

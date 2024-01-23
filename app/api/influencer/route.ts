@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     let query1 = "";
     let query2 = "";
     const keys = Object.keys(body);
-    keys.map((aKey) => {
+    keys?.map((aKey) => {
       query1 += aKey + ",";
       query2 += "'" + body[aKey] + "',";
     });
@@ -58,13 +58,25 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ type: "error", msg: "error" });
   }
 }
+export async function GET() {
+  try {
+    const query = "SELECT * FROM influencer";
+    const rows = await executeQuery(query).catch((e) => {
+      return NextResponse.json({ type: "error", msg: "no table exists" });
+    });
+    return NextResponse.json(rows);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return NextResponse.json({ type: "error", msg: "no table exists" });
+  }
+}
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
     let query = "UPDATE influencer SET ";
     const keys = Object.keys(body);
 
-    keys.map((aKey) => {
+    keys?.map((aKey) => {
       if (aKey !== "id" && aKey !== "userId") {
         query += `${aKey} = '${body[aKey]}', `;
       }

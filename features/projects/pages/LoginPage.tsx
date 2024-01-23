@@ -62,15 +62,17 @@ export default function LoginPage() {
           src="/img/logo(red).svg"
           className="blcok m-auto w-[265px] sp:hidden mb-[50px]"
         />
-        <div className="flex justify-center w-full items-center mb-[20px] pr-[70px] sp:pr-[30px] sp:mt-[50px]">
-          <span className="mr-[20px] w-[70px] text-right">ID</span>
+        <div className="flex justify-center w-full  mb-[20px] pr-[70px] sp:pr-[30px] sp:mt-[50px]">
+          <span className="mr-[20px] mt-[5px] w-[70px] text-right">ID</span>
           <Input
             handleChange={(val) => setId(val)}
             inputClassName={"max-w-[250px] grow"}
           />
         </div>
-        <div className="flex justify-center w-full items-center mb-[20px] pr-[70px] sp:pr-[30px] sp:mb-[30px]">
-          <span className="mr-[20px] w-[70px] text-right">パスワード</span>
+        <div className="flex justify-center w-full  mb-[20px] pr-[70px] sp:pr-[30px] sp:mb-[30px]">
+          <span className="mr-[20px] mt-[5px] w-[70px] text-right">
+            パスワード
+          </span>
           <Input
             password
             handleChange={(val) => setPassword(val)}

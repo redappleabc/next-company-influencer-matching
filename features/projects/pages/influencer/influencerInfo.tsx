@@ -8,6 +8,7 @@ import TextArea from "@/components/atoms/textarea";
 import axios from "axios";
 import { useRecoilValue } from "recoil";
 import { authUserState } from "@/recoil/atom/auth/authUserAtom";
+import { useRouter } from "next/navigation";
 
 export interface InfluencerInfoProps {
   applyMode?: boolean;
@@ -80,6 +81,7 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
   const authUser = useRecoilValue(authUserState);
   const [data, setData] = useState(null);
   const [genre, setGenre] = useState([]);
+  const router = useRouter();
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios.get(
@@ -88,7 +90,7 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
       setData(result.data);
       setGenre(JSON.parse(result.data.genre));
     };
-    if (!applyMode) fetchData();
+    if (!applyMode && authUser) fetchData();
   }, []);
   const handleGenreChange = (val) => {
     let isAlreadyExits = false;
@@ -112,8 +114,10 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
     if (applyMode) result = await axios.post("api/influencer", body);
     else {
       result = await axios.put("api/influencer", body);
+      if (result.data.type === "success") {
+        router.back();
+      }
     }
-    console.log(result.data);
   };
   return (
     <div
@@ -149,6 +153,20 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
           inputClassName="max-w-[250px] grow border-[#D3D3D3] w-[100%]"
           value={data ? data.influencerNameGana : ""}
         />
+      </div>
+      <div className="flex items-center py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+        <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
+          <span>性別</span>
+        </span>
+        <Select
+          handleChange={(val) => setData({ ...data, gender: val })}
+          value={data ? data.gender : "男性"}
+          selectClassName="w-[138px] border-[#D3D3D3]"
+        >
+          <option value={"男性"}>男性</option>
+          <option value={"女性"}>女性</option>
+          <option value={"その他"}>その他</option>
+        </Select>{" "}
       </div>
       <div className="flex items-center py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
@@ -191,7 +209,7 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
           handleChange={(val) => setData({ ...data, prefecture: val })}
           selectClassName="max-w-[250px] grow border-[#D3D3D3] w-[100%]"
         >
-          {prefectures.map((aPrefecture, key) => (
+          {prefectures?.map((aPrefecture, key) => (
             <option key={key} value={aPrefecture}>
               {aPrefecture}
             </option>
@@ -470,7 +488,7 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
               }
               selectClassName="ml-[30px] sp:ml-[0px] grow max-w-[150px]"
             >
-              {followersOptions.map((aOption, key) => (
+              {followersOptions?.map((aOption, key) => (
                 <option key={key} value={aOption}>
                   {aOption}
                 </option>
@@ -514,7 +532,7 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
               }
               selectClassName="ml-[30px] sp:ml-[0px] grow max-w-[150px]"
             >
-              {followersOptions.map((aOption, key) => (
+              {followersOptions?.map((aOption, key) => (
                 <option key={key} value={aOption}>
                   {aOption}
                 </option>
@@ -563,7 +581,7 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
               }
               selectClassName="ml-[30px] sp:ml-[0px] grow max-w-[150px]"
             >
-              {followersOptions.map((aOption, key) => (
+              {followersOptions?.map((aOption, key) => (
                 <option key={key} value={aOption}>
                   {aOption}
                 </option>
@@ -612,7 +630,7 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
               }
               selectClassName="ml-[30px] sp:ml-[0px] grow max-w-[150px]"
             >
-              {followersOptions.map((aOption, key) => (
+              {followersOptions?.map((aOption, key) => (
                 <option key={key} value={aOption}>
                   {aOption}
                 </option>
@@ -661,7 +679,7 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
               }
               selectClassName="ml-[30px] sp:ml-[0px] grow max-w-[150px]"
             >
-              {followersOptions.map((aOption, key) => (
+              {followersOptions?.map((aOption, key) => (
                 <option key={key} value={aOption}>
                   {aOption}
                 </option>

@@ -26,9 +26,8 @@ export async function PUT(request: NextRequest) {
     SET status = '${update}',reason = '${reason}'
     WHERE id = ${id}`
       : `UPDATE cases
-    SET status = '${update}'
+    SET collectionStatus = '${update}'
     WHERE id = ${id}`;
-    console.log(query);
 
     const result = await executeQuery(query);
     if (result) return NextResponse.json({ type: "success" });

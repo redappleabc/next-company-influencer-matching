@@ -6,41 +6,28 @@ import SearchBar from "@/components/organisms/searchbar";
 import ApplicationPage from "../admin/applicationPage";
 import { useRecoilValue } from "recoil";
 import { useState, useEffect } from "react";
-import Modal from "../../utils/modal";
 import { authUserState } from "@/recoil/atom/auth/authUserAtom";
+import Link from "next/link";
 import axios from "axios";
-export default function CollectedCase() {
+export default function AppledCase() {
   const user = useRecoilValue(authUserState);
 
   const [active, setActive] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [data, setData] = useState([]);
-  const [appliedCase, setAppliedCase] = useState([]);
   const [caseId, setCaseId] = useState(null);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [reload, setReload] = useState(false);
-  const [confirmMsg, setConfirmMsg] = useState("");
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get("/api/case/influencer");
+      const result = await axios.get(`/api/apply?id=${user.user.targetId}`);
       if (result.data.length !== 0) {
-        setCaseId(result.data[0]?.id);
+        console.log(result.data[0].caseId);
+
+        setCaseId(result.data[0].caseId);
         setData(result.data);
       }
     };
-    const fetchApplied = async () => {
-      const result = await axios.get(`/api/apply?id=${user.user.targetId}`);
-      setAppliedCase(result.data);
-    };
-    if (user) {
-      fetchApplied();
-      fetchData();
-    }
-  }, [reload]);
-  const alreadyAppliedOrNot = (caseId: number) => {
-    const already = appliedCase.some((a) => a.caseId === caseId);
-    return already;
-  };
+    if (user) fetchData();
+  }, []);
   const onItemClick = ({ idx }: { idx: Number }) => {
     if (active === idx) {
       setActive(null);
@@ -54,26 +41,11 @@ export default function CollectedCase() {
       influencerId: user.user.targetId,
     });
     if (result.data.type === "success") {
-      setReload(!reload);
-      setConfirmMsg("操作が成功しました。");
-      setShowConfirm(true);
+      console.log("success");
     }
   };
   return (
     <div>
-      <div
-        className={
-          showConfirm
-            ? "bg-black bg-opacity-25 w-full h-full fixed left-0 overflow-auto duration-500"
-            : "bg-black bg-opacity-25 w-full h-full fixed left-0 overflow-auto opacity-0 pointer-events-none duration-500"
-        }
-      >
-        <Modal
-          body={confirmMsg}
-          onOk={() => setShowConfirm(false)}
-          onCancel={() => setShowConfirm(false)}
-        />
-      </div>
       <div
         className={
           showModal
@@ -93,7 +65,7 @@ export default function CollectedCase() {
         )}
       </div>
       <div className="px-[30px] sp:px-[12px] pt-[110px] pb-[30px]">
-        <div className="text-title sp:hidden">募集中案件一覧</div>
+        <div className="text-title sp:hidden">応募案件一覧</div>
         <SearchBar
           extendChild={
             <div>
@@ -116,7 +88,8 @@ export default function CollectedCase() {
                     checkBoxClassName="mr-[20px]"
                   />
                   <Checkbox title={"承認"} checkBoxClassName="mr-[20px]" />
-                  <Checkbox title={"否認"} />
+                  <Checkbox title={"否認"} checkBoxClassName="mr-[20px]" />
+                  <Checkbox title={"完了"} />
                 </div>
               </div>
             </div>
@@ -128,10 +101,10 @@ export default function CollectedCase() {
         <table className="w-full text-[14px] sp:hidden">
           <thead>
             <tr>
-              <td className="px-[35px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3] w-[30%]">
+              <td className="px-[35px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3]">
                 会社名
               </td>
-              <td className="px-[35px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3] ">
+              <td className="px-[35px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3]  w-[20%]">
                 案件名
               </td>
               <td className="px-[35px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3]">
@@ -141,12 +114,12 @@ export default function CollectedCase() {
                 来店場所
               </td>
               <td className="text-center w-[100px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3]">
-                募集開始
+                状態
               </td>
               <td className="text-center w-[100px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3] ">
-                募集終了
+                チャット
               </td>
-              <td className="w-[150px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3] "></td>
+              <td className="text-center w-[200px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3] "></td>
             </tr>
           </thead>
           <tbody>
@@ -159,7 +132,7 @@ export default function CollectedCase() {
                   <span
                     className="text-[#3F8DEB] underline hover:cursor-pointer underline-offset-3 sp:text-sp"
                     onClick={() => {
-                      setCaseId(aData.id);
+                      setCaseId(aData.caseId);
                       setShowModal(true);
                     }}
                   >
@@ -173,32 +146,19 @@ export default function CollectedCase() {
                   {aData.casePlace}
                 </td>
                 <td className="text-center w-[100px] py-[25px]  border border-[#D3D3D3]">
-                  {aData.collectionStart
-                    ? aData.collectionStart.split("T")[0] +
-                      "/" +
-                      aData.collectionStart.split("T")[1]
-                    : ""}
+                  {aData.status}
                 </td>
                 <td className="text-center w-[100px] py-[25px]  border border-[#D3D3D3] ">
-                  {aData.collectionEnd
-                    ? aData.collectionEnd.split("T")[0] +
-                      "/" +
-                      aData.collectionEnd.split("T")[1]
-                    : ""}
+                  <Link href={"/chatting"}>
+                    <img
+                      className="w-[35px] m-auto"
+                      src="/img/chatting.svg"
+                      alt="chatting"
+                    />
+                  </Link>
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3] text-center">
-                  {!alreadyAppliedOrNot(aData.id) ? (
-                    <Button
-                      buttonType={ButtonType.PRIMARY}
-                      handleClick={() => handleApply(aData.id)}
-                    >
-                      応募
-                    </Button>
-                  ) : (
-                    <span className="text-white bg-[#236997] p-[10px] rounded-lg shadow-sm">
-                      申請済み
-                    </span>
-                  )}
+                  <Button buttonType={ButtonType.PRIMARY}>完了報告</Button>
                 </td>
               </tr>
             ))}

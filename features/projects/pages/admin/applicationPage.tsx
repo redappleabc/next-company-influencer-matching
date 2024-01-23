@@ -10,12 +10,18 @@ import { useRouter } from "next/navigation";
 export interface ApplicatinProps {
   modalMode?: boolean;
   companyMode?: boolean;
+  influencerDetailMode?: boolean;
+  influencerMode?: boolean;
+  caseID?: number;
   onCancel?: () => void;
 }
 
 const ApplicationPage: React.FC<ApplicatinProps> = ({
   modalMode,
   companyMode,
+  influencerMode,
+  influencerDetailMode,
+  caseID,
   onCancel,
 }: ApplicatinProps) => {
   const [data, setData] = useState(null);
@@ -26,13 +32,19 @@ const ApplicationPage: React.FC<ApplicatinProps> = ({
   const router = useRouter();
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get(`/api/case/aCase/?id=${id}`);
+      let result;
+      if (influencerMode) {
+        result = await axios.get(`/api/case/aCase/?id=${caseID}`);
+      } else {
+        result = await axios.get(`/api/case/aCase/?id=${id}`);
+      }
       setData(result.data);
       setWantedSNS(JSON.parse(result.data.wantedSNS));
     };
 
     fetchData();
-  }, []);
+  }, [caseID]);
+
   const apporove = (val: boolean) => {
     const approveApplication = async () => {
       const reason1 = val ? "" : reason;
@@ -60,7 +72,7 @@ const ApplicationPage: React.FC<ApplicatinProps> = ({
     <div
       className={
         modalMode
-          ? "text-center bg-[white]  px-[35px] sp:px-[12px] sp:text-small w-[40%] sp:w-[90%] m-auto relative"
+          ? "text-center bg-[white]  px-[35px] sp:px-[12px] sp:text-small w-[40%] sp:w-[90%] m-auto relative shadow-lg "
           : "text-center bg-[white] px-[35px] sp:px-[12px] sp:text-small "
       }
     >
@@ -239,7 +251,7 @@ const ApplicationPage: React.FC<ApplicatinProps> = ({
           widthClass
         }
       >
-        <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
+        <span className="w-[35%] mb-[10px] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span className="text-[#6F6F6F]">補足・注意事項 </span>
         </span>
         <div className="text-left">{data?.addition}</div>
@@ -319,10 +331,16 @@ const ApplicationPage: React.FC<ApplicatinProps> = ({
           </Button>
         </div>
       )}
-      {modalMode && !companyMode && (
-        <Button buttonType={ButtonType.PRIMARY} buttonClassName="m-[30px]">
+      {modalMode && influencerMode && !influencerDetailMode && (
+        <Button
+          handleClick={() => {
+            if (onCancel) onCancel();
+          }}
+          buttonType={ButtonType.PRIMARY}
+          buttonClassName="m-[30px]"
+        >
           <span className="flex items-center">
-            <span>応募</span>
+            <span>確認</span>
           </span>
         </Button>
       )}

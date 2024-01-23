@@ -5,11 +5,10 @@ export default function InfluencerSidebar() {
     <div className="bg-[#F8F9FA] min-h-[100vh] w-[264px] sp:hidden px-[20px]">
       <div className=" pt-[120px] pb-[30px] border-b border-gray-300 ">
         <div className="p-[12px] text-[14px]">
-          {/* <Link href={"/top"}>TOP</Link> */}TOP
+          <Link href={"/top/influencer"}>TOP</Link>
         </div>
         <div className="p-[12px] text-[14px]">
-          {/* <Link href={"/appliedList"}>応募案件一覧</Link> */}
-          応募案件一覧
+          <Link href={"/appliedCase"}>応募案件一覧</Link>
         </div>
         <div className="p-[12px] text-[14px]">
           <Link href={"/collectingCase"}>募集中案件一覧</Link>
