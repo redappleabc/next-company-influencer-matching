@@ -5,20 +5,19 @@ import SearchBar from "@/components/organisms/searchbar";
 import Button, { ButtonType } from "@/components/atoms/button";
 import Link from "next/link";
 import ApplicationPage from "../admin/applicationPage";
-import { useRecoilValue } from "recoil";
-import { authUserState } from "@/recoil/atom/auth/authUserAtom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "next/navigation";
 import InfluencerPage from "../admin/influencerPage";
 import Modal from "../../utils/modal";
+import { useRouter } from "next/navigation";
 
 export interface caseData {
   caseProps: Object;
 }
 
 export default function CaseDetailPage({ caseProps }: caseData) {
-  const user = useRecoilValue(authUserState);
+  const router = useRouter();
   const [active, setActive] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showInfluencer, setShowInfluencer] = useState(false);
@@ -37,7 +36,7 @@ export default function CaseDetailPage({ caseProps }: caseData) {
     setCollectionStatusTemp(caseData?.collectionStatus);
     const fetchData = async () => {
       const result = await axios.get(`/api/apply/company?id=${id}`);
-      if (result.data?.length !== 0) {
+      if (result.data?.length) {
         setData(result.data);
         setInfluencerData(result.data[0].influencerId);
       }
@@ -79,10 +78,11 @@ export default function CaseDetailPage({ caseProps }: caseData) {
       setActive(idx);
     }
   };
-  const handleApprove = async (val: string) => {
+  const handleApprove = async (val: string, cur: number) => {
+    const id = cur ? cur : currentApply;
     const result = await axios.put(`/api/apply`, {
       status: val,
-      id: currentApply,
+      id,
     });
     if (result.data.type === "success") {
       setConfirmMsg("操作が成功しました。");
@@ -94,17 +94,39 @@ export default function CaseDetailPage({ caseProps }: caseData) {
       setShowConfirm(true);
     }
   };
-  const handleCollectionStateChange = async (state: string) => {
+  const handleCollectionStateChange = async (
+    state: string,
+    resume?: boolean
+  ) => {
     if (state === "募集中") {
+      if (caseData.status !== "承認") {
+        setConfirmMsg("承認されていないため、募集を開始できません。");
+        setShowConfirm(true);
+        return;
+      }
     }
     const update = state;
-    const result = await axios.put(`/api/case/aCase/?id=${id}`, {
-      update,
-      approveMode: false,
-    });
+    const body = resume
+      ? {
+          update,
+          approveMode: false,
+          resumeMode: true,
+        }
+      : {
+          update,
+          approveMode: false,
+        };
+    const result = await axios.put(`/api/case/aCase/?id=${id}`, body);
     if (result.data.type === "success") {
       setCollectionStatusTemp(state);
     }
+  };
+  const handleToChat = (id) => {
+    const createChatRoom = async () => {
+      await axios.post(`/api/chatting/room?id=${id}`);
+      router.push(`/chatting/${id}`, "_blank");
+    };
+    createChatRoom();
   };
   return (
     <div>
@@ -220,7 +242,7 @@ export default function CaseDetailPage({ caseProps }: caseData) {
                   buttonType={ButtonType.DEFAULT}
                   buttonClassName="rounded-[0px]"
                   handleClick={() => {
-                    handleCollectionStateChange("募集中");
+                    handleCollectionStateChange("募集中", true);
                   }}
                 >
                   再開
@@ -269,7 +291,7 @@ export default function CaseDetailPage({ caseProps }: caseData) {
               <td className="px-[35px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3]">
                 チャット
               </td>
-              <td className="py-[25px] bg-[#F8F9FA] border border-[#D3D3D3] w-[70px]"></td>
+              <td className="py-[25px] bg-[#F8F9FA] border border-[#D3D3D3] w-[100px]"></td>
             </tr>
           </thead>
           <tbody>
@@ -289,28 +311,40 @@ export default function CaseDetailPage({ caseProps }: caseData) {
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3] ">
                   <div className="flex flex-wrap items-center gap-[15px]">
-                    <img
-                      className="w-[35px]"
-                      src="/img/sns/Instagram.svg"
-                      alt="instagram"
-                    />
-                    <img
-                      className="w-[35px]"
-                      src="/img/sns/tiktok.svg"
-                      alt="tiktok"
-                    />
-                    <img className="w-[35px]" src="/img/sns/x.svg" alt="x" />
-                    <img
-                      className="w-[35px]"
-                      src="/img/sns/youtube.svg"
-                      alt="youtube"
-                    />
-                    <img
-                      className="w-[35px]"
-                      src="/img/sns/facebook.svg"
-                      alt="facebook"
-                    />
-                    <span className="text-[#C0C0C0]">etc.</span>
+                    {aData.instagram && (
+                      <img
+                        className="w-[35px]"
+                        src="/img/sns/Instagram.svg"
+                        alt="instagram"
+                      />
+                    )}
+                    {aData.tiktok && (
+                      <img
+                        className="w-[35px]"
+                        src="/img/sns/tiktok.svg"
+                        alt="tiktok"
+                      />
+                    )}
+                    {aData.x && (
+                      <img className="w-[35px]" src="/img/sns/x.svg" alt="x" />
+                    )}
+                    {aData.youtube && (
+                      <img
+                        className="w-[35px]"
+                        src="/img/sns/youtube.svg"
+                        alt="youtube"
+                      />
+                    )}
+                    {aData.facebook && (
+                      <img
+                        className="w-[35px]"
+                        src="/img/sns/facebook.svg"
+                        alt="facebook"
+                      />
+                    )}
+                    {aData.otherSNS && (
+                      <span className="text-[#C0C0C0]">etc.</span>
+                    )}
                   </div>
                 </td>
                 <td className="px-[35px] py-[25px]  border border-[#D3D3D3] hover:cursor-pointer">
@@ -320,16 +354,26 @@ export default function CaseDetailPage({ caseProps }: caseData) {
                   {aData.date}
                 </td>
                 <td className="w-[150px] py-[25px]  border border-[#D3D3D3]">
-                  <Link href={"/chatting"}>
-                    <img
-                      className="w-[35px] m-auto"
-                      src="/img/chatting.svg"
-                      alt="chatting"
-                    />
-                  </Link>
+                  <img
+                    className="w-[35px] m-auto cursor-pointer"
+                    src="/img/chatting.svg"
+                    alt="chatting"
+                    onClick={() => handleToChat(aData.id)}
+                  />
                 </td>
                 <td className="w-[100px] py-[25px]  border text-center border-[#D3D3D3] ">
-                  <Button buttonType={ButtonType.PRIMARY}>完了</Button>
+                  {aData.status === "完了" ? (
+                    <div className="text-white bg-[#236997] p-[10px] m-[5px] rounded-lg shadow-sm">
+                      完了した
+                    </div>
+                  ) : (
+                    <Button
+                      handleClick={() => handleApprove("完了", aData.id)}
+                      buttonType={ButtonType.PRIMARY}
+                    >
+                      完了
+                    </Button>
+                  )}
                 </td>
               </tr>
             ))}

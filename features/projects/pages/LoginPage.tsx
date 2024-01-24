@@ -16,6 +16,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const [_, setAuthUser] = useRecoilState(authUserState);
 
   const handleLogin = async () => {
@@ -31,14 +32,19 @@ export default function LoginPage() {
       setError("パスワードを入力してください。");
       return;
     }
+    setIsLoading(true);
     const { data: response, error } = await login({ email: id, password });
+    setIsLoading(false);
     if (response.error || !response.type) {
       setError("サーバーでエラーが発生しました。");
+      setIsLoading(false);
       return;
     }
     if (response.type === "error") {
+      setIsLoading(false);
       setError(response.msg);
     } else {
+      setIsLoading(false);
       setAuthUser({ user: response.data });
       switch (response.data?.role) {
         case "admin":
@@ -63,7 +69,7 @@ export default function LoginPage() {
           className="blcok m-auto w-[265px] sp:hidden mb-[50px]"
         />
         <div className="flex justify-center w-full  mb-[20px] pr-[70px] sp:pr-[30px] sp:mt-[50px]">
-          <span className="mr-[20px] mt-[5px] w-[70px] text-right">ID</span>
+          <span className="mr-[20px] mt-[5px] w-[70px] text-right">Email</span>
           <Input
             handleChange={(val) => setId(val)}
             inputClassName={"max-w-[250px] grow"}
@@ -81,7 +87,18 @@ export default function LoginPage() {
         </div>
         <div className="text-center mb-[10px]">
           <Button buttonType={ButtonType.PRIMARY} handleClick={handleLogin}>
-            ログイン
+            <div className="flex items-center">
+              {isLoading ? (
+                <img
+                  src="/img/refresh.svg"
+                  alt="rotate"
+                  className="mr-[5px] rotate"
+                />
+              ) : (
+                <img src="/img/apply.svg" alt="rotate" className="mr-[5px]" />
+              )}
+              ログイン
+            </div>
           </Button>
         </div>
         {error !== "" && (

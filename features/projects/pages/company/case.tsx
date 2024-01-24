@@ -10,7 +10,7 @@ import { getUser } from "../../utils/getUser";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-
+import Modal from "../../utils/modal";
 const CasePage: React.FC = () => {
   const [data, setData] = useState({
     caseType: "来 店",
@@ -34,11 +34,12 @@ const CasePage: React.FC = () => {
   const [wantedSNS, setWantedSNS] = useState([]);
   const [error, setError] = useState("");
   const { id } = useParams();
-
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [confirmMsg, setConfirmMsg] = useState("操作が成功しました。");
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios.get(`/api/case/aCase?id=${id}`);
-      setData(result.data);
+      if (result.data) setData(result.data);
       setWantedSNS(JSON.parse(result.data.wantedSNS));
     };
     if (id) fetchData();
@@ -56,6 +57,14 @@ const CasePage: React.FC = () => {
     }
   };
   const handleRequest = async (saveMode: boolean) => {
+    const { targetStatus } = user.user;
+
+    if (targetStatus !== "稼動中") {
+      setConfirmMsg("稼働中ではないので申請できません。");
+      setShowConfirm(true);
+      return;
+    }
+
     const body = {
       ...data,
       wantedSNS: JSON.stringify(wantedSNS),
@@ -90,7 +99,7 @@ const CasePage: React.FC = () => {
             status: "申請前",
           });
           setError("");
-          router.back();
+          setShowConfirm(true);
         } else {
           const result = await axios.post("/api/case", {
             ...body,
@@ -118,8 +127,35 @@ const CasePage: React.FC = () => {
       }
     }
   };
+  const determineEditable = () => {
+    let startable;
+    if (!data.collectionStatus) {
+      startable =
+        !data.status || data.status === "申請前" || data.status === "否認";
+    } else {
+      startable =
+        (data.status === "承認" && data.collectionStatus === "停止中") ||
+        (data.status === "否認" && data.collectionStatus === "募集中") ||
+        data.status === "申請前" ||
+        (data.status === "否認" && data.collectionStatus === "停止");
+    }
+    return startable;
+  };
   return (
     <div className="text-center bg-[white] px-[35px] sp:px-[12px] sp:text-small ">
+      <div
+        className={
+          showConfirm
+            ? "bg-black bg-opacity-25 w-full h-full fixed left-0 top-0 overflow-auto duration-500"
+            : "bg-black bg-opacity-25 w-full h-full fixed left-0 top-0 overflow-auto opacity-0 pointer-events-none duration-500"
+        }
+      >
+        <Modal
+          body={confirmMsg}
+          onOk={() => setShowConfirm(false)}
+          onCancel={() => setShowConfirm(false)}
+        />
+      </div>
       <div className="flex  pt-[20px] pb-[8px]  w-[full] border-b-[1px] border-[#DDDDDD] mt-[70px] sp:mt-[96px]">
         <span className="text-title sp:text-sptitle">募集案件登録・編集</span>
       </div>
@@ -359,7 +395,7 @@ const CasePage: React.FC = () => {
         <div className="text-center m-[10px] text-[#EE5736]">{error}</div>
       )}
       <div className="flex justify-center mt-[36px] mb-[160px] sp:mb-[60px]">
-        {data?.status !== "申請中" && [
+        {determineEditable() && [
           <Button
             buttonType={ButtonType.PRIMARY}
             buttonClassName="mr-[30px]"

@@ -6,25 +6,39 @@ import Input from "@/components/atoms/input";
 import Select from "@/components/atoms/select";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import Modal from "../../utils/modal";
 export interface CompanyProps {
   companyData?: object;
 }
-
+const confirmMsg = "操作が成功しました。";
 const CompanyPage: React.FC<CompanyProps> = ({ companyData }: CompanyProps) => {
   const router = useRouter();
   const [data, setData] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
   useEffect(() => {
     setData(companyData);
   }, [companyData]);
   const handleUpdate = async () => {
     const result = await axios.put("/api/company", data);
     if (result.data.type === "success") {
-      router.back();
-      console.log("succes");
+      setShowConfirm(true);
     }
   };
   return (
     <div className="text-center bg-[white] px-[35px] sp:px-[12px] sp:text-small ">
+      <div
+        className={
+          showConfirm
+            ? "bg-black bg-opacity-25 w-full h-full fixed top-0 left-0 overflow-auto duration-500"
+            : "bg-black bg-opacity-25 w-full h-full fixed top-0 left-0 overflow-auto opacity-0 pointer-events-none duration-500"
+        }
+      >
+        <Modal
+          body={confirmMsg}
+          onOk={() => setShowConfirm(false)}
+          onCancel={() => setShowConfirm(false)}
+        />
+      </div>
       <div className="flex items-center py-[20px]  w-[full] border-b-[1px] border-[#DDDDDD] mt-[70px] sp:mt-[96px]">
         <span className="text-title sp:text-sptitle">{data?.companyName}</span>
       </div>
@@ -129,6 +143,7 @@ const CompanyPage: React.FC<CompanyProps> = ({ companyData }: CompanyProps) => {
           <span>月の募集数</span>
         </span>
         <Input
+          type={"number"}
           inputClassName="w-[138px] border-[#D3D3D3]"
           value={data?.monthlyCollectionCnt}
           handleChange={(val) =>
@@ -141,6 +156,7 @@ const CompanyPage: React.FC<CompanyProps> = ({ companyData }: CompanyProps) => {
           <span>同時募集数</span>
         </span>
         <Input
+          type={"number"}
           inputClassName="w-[138px] border-[#D3D3D3]"
           value={data?.concurrentCollectionCnt}
           handleChange={(val) =>

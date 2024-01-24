@@ -1,39 +1,53 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export interface TextAreaProps {
   textAreaClassName?: string;
   placeholder?: string;
-  value?: string;
+  reset?: boolean;
   resizable?: boolean;
   notRequired?: boolean;
   requirMsg?: string;
+  value?: string;
   handleChange?: (val: string) => void;
+  handleCtrlEnter?: (val: string) => void;
 }
 
 const TextArea: React.FC<TextAreaProps> = ({
   textAreaClassName,
   placeholder,
   handleChange,
-  value,
+  reset,
   resizable,
   notRequired,
   requirMsg,
+  value,
+  handleCtrlEnter,
 }: TextAreaProps) => {
   const [error, setError] = useState("errorMsg");
   const [isValid, setIsValid] = useState(true);
   const validate = (val: string) => {
     if (!notRequired && val === "") {
       setError(requirMsg);
+      handleChange(val);
       setIsValid(false);
       return;
     }
-    setIsValid(true);
     handleChange(val);
+    setIsValid(true);
   };
+  useEffect(() => {
+    document.getElementById("mainArea").value = "";
+  }, [reset]);
   return (
     <div className={textAreaClassName}>
       <textarea
+        id="mainArea"
+        onKeyUp={(e) => {
+          if (e.ctrlKey && e.key === "Enter") {
+            handleCtrlEnter();
+          }
+        }}
         defaultValue={value}
         onChange={(e) => validate(e.target.value)}
         className={

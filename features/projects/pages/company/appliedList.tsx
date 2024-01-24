@@ -17,8 +17,7 @@ export default function AppliedList() {
       const result = await axios.get(
         `/api/case/company?id=${user.user?.targetId}`
       );
-      setData(result.data);
-      console.log(result.data);
+      if (result.data?.length) setData(result.data);
     };
     if (user) fetchData();
   }, []);
@@ -30,27 +29,26 @@ export default function AppliedList() {
       setActive(idx);
     }
   };
+
   return (
     <div>
       <div className="px-[30px] sp:px-[12px] pt-[110px] pb-[30px]">
         <div className="text-title sp:hidden">登録案件一覧</div>
-        <div>
-          <Link href={"/case"}>
-            <Button
-              buttonType={ButtonType.PRIMARY}
-              buttonClassName="mt-[15px] rounded-[0px]"
-            >
-              <div className="flex">
-                <img src="/img/plus.svg" alt="plus" className="mr-[5px]" />
-                新規登録
-              </div>
-            </Button>
-          </Link>
-        </div>
+        <Link href={"/case"}>
+          <Button
+            buttonType={ButtonType.PRIMARY}
+            buttonClassName="mt-[15px] sp:my-[15px] sp:text-small rounded-[0px]"
+          >
+            <div className="flex">
+              <img src="/img/plus.svg" alt="plus" className="mr-[5px]" />
+              新規登録
+            </div>
+          </Button>
+        </Link>
         <SearchBar
           extendChild={
             <div>
-              <div className="mt-[30px] sp:mt-[10px] text-small text-[#3F8DEB] font-bold">
+              <div className="mt-[20px] sp:mt-[10px] text-small text-[#3F8DEB] font-bold">
                 条件を絞り込みできます。
               </div>
               <div className="flex sp:block mt-[8px] flex-wrap gap-x-10">
@@ -140,15 +138,13 @@ export default function AppliedList() {
                     : ""}
                 </td>
                 <td className="py-[25px]  border border-[#D3D3D3]">
-                  {aData.status === "承認" && (
-                    <Link href={`/caseDetail/${aData.id}`}>
-                      <img
-                        src="/img/detail.svg"
-                        alt="detail"
-                        className="m-auto"
-                      />
-                    </Link>
-                  )}
+                  <Link href={`/caseDetail/${aData.id}`} target="blank">
+                    <img
+                      src="/img/detail.svg"
+                      alt="detail"
+                      className="m-auto"
+                    />
+                  </Link>
                 </td>
                 <td className="py-[25px]  border border-[#D3D3D3] ">
                   <Link href={`/case/${aData.id}`}>

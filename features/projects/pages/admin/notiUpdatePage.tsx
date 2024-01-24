@@ -3,13 +3,15 @@ import React, { useEffect, useState } from "react";
 import Button, { ButtonType } from "@/components/atoms/button";
 import TextArea from "@/components/atoms/textarea";
 import axios from "axios";
-
+import Modal from "../../utils/modal";
+const confirmMsg = "操作が成功しました。";
 const NotiPage: React.FC = () => {
   const [data, setData] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios.get("/api/auth/noti");
-      setData(result.data?.data);
+      if (result.data) setData(result.data.data);
     };
     fetchData();
   }, []);
@@ -20,10 +22,25 @@ const NotiPage: React.FC = () => {
       mainNoti: "",
     };
     const result = await axios.post("/api/auth/noti", { ...noti, ...data });
-    console.log(result.data);
+    if (result.data.type === "success") {
+      setShowConfirm(true);
+    }
   };
   return (
     <div className="bg-[white] px-[35px] sp:px-[12px] sp:text-small ">
+      <div
+        className={
+          showConfirm
+            ? "bg-black bg-opacity-25 w-full h-full fixed left-0 overflow-auto duration-500"
+            : "bg-black bg-opacity-25 w-full h-full fixed left-0 overflow-auto opacity-0 pointer-events-none duration-500"
+        }
+      >
+        <Modal
+          body={confirmMsg}
+          onOk={() => setShowConfirm(false)}
+          onCancel={() => setShowConfirm(false)}
+        />
+      </div>
       <div className="flex sp:hidden items-center py-[20px]  w-[full] border-b-[1px] border-[#DDDDDD] mt-[70px] sp:mt-[96px]">
         <span className="text-title sp:text-sptitle">お知らせ更新</span>
       </div>
@@ -35,13 +52,14 @@ const NotiPage: React.FC = () => {
             <TextArea
               value={data?.mainNoti}
               handleChange={(val) => setData({ ...data, mainNoti: val })}
-              textAreaClassName="mt-[20px] sp:mt-[10px] w-[100%] h-[120px] resize-y"
+              textAreaClassName="mt-[20px] sp:mt-[10px] w-[100%] h-[120px]  "
               placeholder="お知らせを入力してください。"
             />
             <div className="w-[100%] text-right mt-[20px] sp:mt-[10px]">
               <Button
                 buttonType={ButtonType.PRIMARY}
                 handleClick={handleUpdate}
+                buttonClassName="mt-[10px]"
               >
                 <span className="flex items-center">
                   <span className="sp:text-small">更新</span>
@@ -58,13 +76,14 @@ const NotiPage: React.FC = () => {
             <span className="text-[#6F6F6F]">お知らせ</span>
             <TextArea
               value={data?.companyNoti}
-              textAreaClassName="mt-[20px] sp:mt-[10px] w-[100%] h-[120px]  resize-y"
+              textAreaClassName="mt-[20px] sp:mt-[10px] w-[100%] h-[120px]   "
               placeholder="お知らせを入力してください。"
               handleChange={(val) => setData({ ...data, companyNoti: val })}
             />
             <div className="w-[100%] text-right mt-[20px] sp:mt-[10px] mb-[46px] sp:mb-[20px]">
               <Button
                 buttonType={ButtonType.PRIMARY}
+                buttonClassName="mt-[10px]"
                 handleClick={handleUpdate}
               >
                 <span className="flex items-center">
@@ -85,7 +104,7 @@ const NotiPage: React.FC = () => {
             <span className="text-[#6F6F6F]">お知らせ</span>
             <TextArea
               value={data?.influencerNoti}
-              textAreaClassName="mt-[20px] sp:mt-[10px] w-[100%] h-[120px]  resize-y "
+              textAreaClassName="mt-[20px] sp:mt-[10px] w-[100%] h-[120px]    "
               placeholder="お知らせを入力してください。"
               handleChange={(val) => setData({ ...data, influencerNoti: val })}
             />
@@ -93,6 +112,7 @@ const NotiPage: React.FC = () => {
               <Button
                 buttonType={ButtonType.PRIMARY}
                 handleClick={handleUpdate}
+                buttonClassName="mt-[10px]"
               >
                 <span className="flex items-center">
                   <span>更新</span>

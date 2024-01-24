@@ -37,14 +37,17 @@ export async function POST(request: NextRequest) {
     }
     const type = user.role === "企業" ? "company" : "influencer";
     const result1 = await executeQuery(
-      `SELECT id FROM ${type} where userId = ${user.id}`
+      `SELECT * FROM ${type} where userId = ${user.id}`
     ).catch((e) => {
       return NextResponse.json({ type: "error" });
     });
     const targetId = result1[0].id;
+    const targetStatus = result1[0].status;
+    const isFree = result1[0].freeAccount ? result1[0].freeAccount : true;
+
     return NextResponse.json({
       type: "success",
-      data: { ...user, targetId },
+      data: { ...user, targetId, targetStatus, isFree },
     });
   } catch (error) {
     console.error("Error creating table or inserting record:", error);

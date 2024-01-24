@@ -4,7 +4,9 @@ import Button, { ButtonType } from "@/components/atoms/button";
 import Input from "@/components/atoms/input";
 import Select from "@/components/atoms/select";
 import axios from "axios";
-
+import Modal from "../../utils/modal";
+import { useRouter } from "next/navigation";
+const confirmMsg = "操作が成功しました。";
 export interface InfluencerProps {
   influencerData?: object;
   modalMode?: boolean;
@@ -19,12 +21,16 @@ const InfluencerPage: React.FC<InfluencerProps> = ({
   handleApprove,
 }: InfluencerProps) => {
   const [data, setData] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const router = useRouter();
   useEffect(() => {
     setData(influencerData);
   }, [influencerData]);
   const handleUpdate = async () => {
     const result = await axios.put("/api/influencer", data);
-    console.log(result);
+    if (result.data) {
+      setShowConfirm(true);
+    }
   };
   const className = modalMode ? "w-[90%]" : "w-[50%]";
   return (
@@ -35,6 +41,19 @@ const InfluencerPage: React.FC<InfluencerProps> = ({
           : "text-center bg-[white] px-[35px] sp:px-[12px] sp:text-small "
       }
     >
+      <div
+        className={
+          showConfirm
+            ? "bg-black bg-opacity-25 w-full h-full top-0 fixed left-0 overflow-auto duration-500"
+            : "bg-black bg-opacity-25 w-full h-full top-0 fixed left-0 overflow-auto opacity-0 pointer-events-none duration-500"
+        }
+      >
+        <Modal
+          body={confirmMsg}
+          onOk={() => setShowConfirm(false)}
+          onCancel={() => setShowConfirm(false)}
+        />
+      </div>
       {!modalMode && (
         <div className="flex items-center py-[20px]  w-[full] border-b-[1px] border-[#DDDDDD] mt-[70px] sp:mt-[96px]">
           <span className="text-title sp:text-sptitle">{data?.nickName}</span>
@@ -132,110 +151,122 @@ const InfluencerPage: React.FC<InfluencerProps> = ({
             : ""}
         </div>
       </div>
-      <div
-        className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
-      >
-        <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
-          <span className="hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
-            {data?.instagram ? (
-              <a href={JSON.parse(data?.instagram).account} target="_blank">
-                Instagram
-              </a>
-            ) : (
-              "Instagram"
-            )}
+      {data?.instagram && (
+        <div
+          className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
+        >
+          <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
+            <span className="hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
+              {data?.instagram ? (
+                <a href={JSON.parse(data?.instagram).account} target="_blank">
+                  Instagram
+                </a>
+              ) : (
+                "Instagram"
+              )}
+            </span>
           </span>
-        </span>
-        <span>{`フォロワー数：${
-          data?.instagram ? JSON.parse(data?.instagram).followers : ""
-        }`}</span>
-      </div>
-      <div
-        className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
-      >
-        <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
-          <span className="hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
-            {data?.x ? (
-              <a href={JSON.parse(data?.x).account} target="_blank">
-                x
-              </a>
-            ) : (
-              "x"
-            )}
-          </span>
-        </span>
-        <span>{`フォロワー数：${
-          data?.x ? JSON.parse(data?.x).followers : ""
-        }`}</span>{" "}
-      </div>
-      <div
-        className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
-      >
-        <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
-          <span className="hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
-            {data?.facebook ? (
-              <a href={JSON.parse(data?.facebook).account} target="_blank">
-                facebook
-              </a>
-            ) : (
-              "facebook"
-            )}
-          </span>
-        </span>
-        <span>{`フォロワー数：${
-          data?.facebook ? JSON.parse(data?.facebook).followers : ""
-        }`}</span>{" "}
-      </div>
-      <div
-        className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
-      >
-        <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
-          <span className="hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
-            {data?.tiktok ? (
-              <a href={JSON.parse(data?.tiktok).account} target="_blank">
-                tiktok
-              </a>
-            ) : (
-              "tiktok"
-            )}
-          </span>
-        </span>
-        <span>{`フォロワー数：${
-          data?.facebook ? JSON.parse(data?.facebook).followers : ""
-        }`}</span>{" "}
-      </div>
-      <div
-        className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
-      >
-        <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
-          <span className="hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
-            {data?.youtube ? (
-              <a href={JSON.parse(data?.youtube).account} target="_blank">
-                youtube
-              </a>
-            ) : (
-              "youtube"
-            )}
-          </span>
-        </span>
-        <span>{`フォロワー数：${
-          data?.facebook ? JSON.parse(data?.facebook).followers : ""
-        }`}</span>{" "}
-      </div>
-      <div
-        className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
-      >
-        <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
-          <span className="text-[#6F6F6F]">その他</span>
-        </span>
-        <div>
-          {data?.otherSNS
-            ? data?.otherSNS
-                .split("\n")
-                ?.map((a, key) => <div key={key}>{a}</div>)
-            : ""}
+          <span>{`フォロワー数：${
+            data?.instagram ? JSON.parse(data?.instagram).followers : ""
+          }`}</span>
         </div>
-      </div>
+      )}
+      {data?.x && (
+        <div
+          className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
+        >
+          <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
+            <span className="hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
+              {data?.x ? (
+                <a href={JSON.parse(data?.x).account} target="_blank">
+                  x
+                </a>
+              ) : (
+                "x"
+              )}
+            </span>
+          </span>
+          <span>{`フォロワー数：${
+            data?.x ? JSON.parse(data?.x).followers : ""
+          }`}</span>{" "}
+        </div>
+      )}
+      {data?.facebook && (
+        <div
+          className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
+        >
+          <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
+            <span className="hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
+              {data?.facebook ? (
+                <a href={JSON.parse(data?.facebook).account} target="_blank">
+                  facebook
+                </a>
+              ) : (
+                "facebook"
+              )}
+            </span>
+          </span>
+          <span>{`フォロワー数：${
+            data?.facebook ? JSON.parse(data?.facebook).followers : ""
+          }`}</span>{" "}
+        </div>
+      )}
+      {data?.tiktok && (
+        <div
+          className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
+        >
+          <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
+            <span className="hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
+              {data?.tiktok ? (
+                <a href={JSON.parse(data?.tiktok).account} target="_blank">
+                  tiktok
+                </a>
+              ) : (
+                "tiktok"
+              )}
+            </span>
+          </span>
+          <span>{`フォロワー数：${
+            data?.facebook ? JSON.parse(data?.facebook).followers : ""
+          }`}</span>{" "}
+        </div>
+      )}
+      {data?.youtube && (
+        <div
+          className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
+        >
+          <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
+            <span className="hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
+              {data?.youtube ? (
+                <a href={JSON.parse(data?.youtube).account} target="_blank">
+                  youtube
+                </a>
+              ) : (
+                "youtube"
+              )}
+            </span>
+          </span>
+          <span>{`フォロワー数：${
+            data?.facebook ? JSON.parse(data?.facebook).followers : ""
+          }`}</span>{" "}
+        </div>
+      )}
+      {data?.otherSNS && (
+        <div
+          className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
+        >
+          <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
+            <span className="text-[#6F6F6F]">その他</span>
+          </span>
+          <div>
+            {data?.otherSNS
+              ? data?.otherSNS
+                  .split("\n")
+                  ?.map((a, key) => <div key={key}>{a}</div>)
+              : ""}
+          </div>
+        </div>
+      )}
       {!modalMode && (
         <div
           className={`flex items-center py-[15px] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px] ${className}`}
@@ -290,6 +321,9 @@ const InfluencerPage: React.FC<InfluencerProps> = ({
             </span>
           </Button>
           <Button
+            handleClick={() => {
+              router.back();
+            }}
             buttonType={ButtonType.DEFAULT}
             buttonClassName="rounded-[5px]"
           >

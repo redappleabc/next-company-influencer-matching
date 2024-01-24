@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function SideBar() {
   return (
-    <div className="bg-[#F8F9FA] min-h-[100vh] w-[264px] sp:hidden">
+    <div className="bg-[#F8F9FA] min-h-[100vh] w-[264px] sp:w-[0px] duration-200">
       <div className="px-[20px] py-[120px]">
         <div className="p-[12px] text-[14px]">
           <Link href={"/companyList"}>企業一覧</Link>

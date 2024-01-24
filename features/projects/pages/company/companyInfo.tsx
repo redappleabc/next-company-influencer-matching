@@ -7,16 +7,17 @@ import { useRecoilValue } from "recoil";
 import { authUserState } from "@/recoil/atom/auth/authUserAtom";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Modal from "../../utils/modal";
 
 export interface CompanyInfoProps {
   applyMode?: boolean;
 }
-
+const confirmMsg = "操作が成功しました。";
 const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
   applyMode,
 }: CompanyInfoProps) => {
   const authUser = useRecoilValue(authUserState);
-
+  const [showConfirm, setShowConfirm] = useState(false);
   const [agree, setAgree] = useState(false);
   const [data, setData] = useState({
     companyName: "",
@@ -51,38 +52,45 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
       const result = await axios.get(
         `/api/company/aCompany?id=${authUser.user?.targetId}`
       );
-      setData(result.data);
+      if (result.data) setData(result.data);
     };
     if (!applyMode && authUser) fetchData();
   }, []);
   const handleApply = async (isApply) => {
     const keys = Object.keys(msgs);
     let isValid = true;
+
     keys.forEach((aKey) => {
       if (data[aKey] === "") {
         if (!isValid) return;
         setError(msgs[aKey]);
         isValid = false;
+        return;
       }
     });
-    if (!agree && isValid) {
-      setError("個人情報の取り扱いに同意する必要があります。");
-      return;
-    }
+    if (!isValid) return;
+
     let phonePattern = /^0\d{1,4}-\d{1,4}-\d{4}$/;
     if (!phonePattern.test(data.phoneNumber.trim())) {
       setError("電話番号形式ではありません");
       isValid = false;
+      return;
     }
     let mailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!mailPattern.test(data.emailAddress.trim())) {
       setError("メールアドレス形式ではありません");
       isValid = false;
+      return;
     }
     let postalCodePattern = /^\d{3}-\d{4}$/;
     if (!postalCodePattern.test(data.postalCode.trim())) {
       setError("郵便番号形式ではありません");
       isValid = false;
+      return;
+    }
+    if (!agree) {
+      setError("個人情報の取り扱いに同意する必要があります。");
+      return;
     }
     if (!isValid) return;
     if (isApply) {
@@ -93,8 +101,10 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
     }
     if (!isApply) {
       const res = await axios.put(`api/company`, data);
-      setError("");
-      console.log(data);
+      if (res.data) {
+        setError("");
+        setShowConfirm(true);
+      }
     }
   };
 
@@ -106,6 +116,19 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
           : "text-center px-[35px] sp:px-[12px] sp:text-small bg-[white]"
       }
     >
+      <div
+        className={
+          showConfirm
+            ? "bg-black bg-opacity-25 w-full h-full fixed left-0 overflow-auto duration-500"
+            : "bg-black bg-opacity-25 w-full h-full fixed left-0 overflow-auto opacity-0 pointer-events-none duration-500"
+        }
+      >
+        <Modal
+          body={confirmMsg}
+          onOk={() => setShowConfirm(false)}
+          onCancel={() => setShowConfirm(false)}
+        />
+      </div>
       {!applyMode && (
         <div className="flex  py-[20px]  w-[full] border-b-[1px] border-[#DDDDDD] mt-[70px] mb-[50px] sp:mt-[96px]">
           <span className="text-title sp:text-sptitle">企業情報変更</span>

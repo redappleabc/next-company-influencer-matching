@@ -7,11 +7,12 @@ import ApplicationPage from "../admin/applicationPage";
 import { useRecoilValue } from "recoil";
 import { useState, useEffect } from "react";
 import { authUserState } from "@/recoil/atom/auth/authUserAtom";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
 export default function AppledCase() {
   const user = useRecoilValue(authUserState);
-
+  const router = useRouter();
   const [active, setActive] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [data, setData] = useState([]);
@@ -19,9 +20,7 @@ export default function AppledCase() {
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios.get(`/api/apply?id=${user.user.targetId}`);
-      if (result.data.length !== 0) {
-        console.log(result.data[0].caseId);
-
+      if (result.data?.length) {
         setCaseId(result.data[0].caseId);
         setData(result.data);
       }
@@ -35,14 +34,12 @@ export default function AppledCase() {
       setActive(idx);
     }
   };
-  const handleApply = async (caseId: string) => {
-    const result = await axios.post("/api/apply", {
-      caseId,
-      influencerId: user.user.targetId,
-    });
-    if (result.data.type === "success") {
-      console.log("success");
-    }
+  const handleToChat = (id) => {
+    const createChatRoom = async () => {
+      await axios.post(`/api/chatting/room?id=${id}`);
+      router.push(`/chattingInf/${id}`, "_blank");
+    };
+    createChatRoom();
   };
   return (
     <div>
@@ -119,7 +116,7 @@ export default function AppledCase() {
               <td className="text-center w-[100px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3] ">
                 チャット
               </td>
-              <td className="text-center w-[200px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3] "></td>
+              <td className="text-center w-[120px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3] "></td>
             </tr>
           </thead>
           <tbody>
@@ -149,16 +146,23 @@ export default function AppledCase() {
                   {aData.status}
                 </td>
                 <td className="text-center w-[100px] py-[25px]  border border-[#D3D3D3] ">
-                  <Link href={"/chatting"}>
-                    <img
-                      className="w-[35px] m-auto"
-                      src="/img/chatting.svg"
-                      alt="chatting"
-                    />
-                  </Link>
+                  <img
+                    className="w-[35px] m-auto cursor-pointer"
+                    src="/img/chatting.svg"
+                    alt="chatting"
+                    onClick={() => handleToChat(aData.id)}
+                  />
                 </td>
-                <td className="px-[35px] py-[25px]  border border-[#D3D3D3] text-center">
-                  <Button buttonType={ButtonType.PRIMARY}>完了報告</Button>
+                <td className="px-[15px] py-[25px]  border border-[#D3D3D3] text-center">
+                  {aData.status === "完了" ? (
+                    <div className="text-white bg-[#236997] p-[10px] m-[5px] rounded-lg shadow-sm">
+                      完了した
+                    </div>
+                  ) : (
+                    <Button buttonType={ButtonType.PRIMARY}>
+                      <span className="text-small">完了報告</span>
+                    </Button>
+                  )}
                 </td>
               </tr>
             ))}

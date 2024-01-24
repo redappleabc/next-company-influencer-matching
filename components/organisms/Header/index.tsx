@@ -74,38 +74,126 @@ const Header: React.FC<Headerprops> = ({ mode }: Headerprops) => {
           ログアウト
         </div>
       </div>
-      {showMenu && (
-        <div className="relative lg:hidden">
-          <div className="bg-[#8F8F8F] text-[white] absolute">
-            <div className="px-[20px]">
+      <div
+        className={
+          showMenu
+            ? "relative lg:hidden duration-500"
+            : "relative lg:hidden opacity-0 duration-500"
+        }
+      >
+        <div className="bg-[#8F8F8F] text-[white] absolute pointer-events-none">
+          <div className="px-[20px]">
+            {mode === "admin" && [
               <div
                 className="p-[12px] text-[14px]"
                 onClick={() => setShowMenu(false)}
               >
                 <Link href={"/companyList"}>企業一覧</Link>
-              </div>
+              </div>,
               <div
                 className="p-[12px] text-[14px]"
                 onClick={() => setShowMenu(false)}
               >
                 <Link href={"/influencerList"}>インフルエンサー一覧</Link>
-              </div>
+              </div>,
               <div
                 className="p-[12px] text-[14px]"
                 onClick={() => setShowMenu(false)}
               >
                 <Link href={"/applicationList"}>申請案件一覧</Link>
-              </div>
+              </div>,
               <div
                 className="p-[12px] text-[14px]"
                 onClick={() => setShowMenu(false)}
               >
                 <Link href={"/notification"}>お知らせ更新</Link>
-              </div>
-            </div>
+              </div>,
+            ]}
+            {mode === "company" && [
+              <div
+                className="p-[12px] text-[14px]"
+                onClick={() => setShowMenu(false)}
+              >
+                <Link href={"/top"}>TOP</Link>
+              </div>,
+              <div
+                className="p-[12px] text-[14px]"
+                onClick={() => setShowMenu(false)}
+              >
+                <Link href={"/appliedList"}>登録案件一覧</Link>
+              </div>,
+              <div
+                className="p-[12px] text-[14px]"
+                onClick={() => setShowMenu(false)}
+              >
+                <Link href={"/case"}>案件の新規登録</Link>
+              </div>,
+              <div
+                className="p-[12px] text-[14px]"
+                onClick={() => setShowMenu(false)}
+              >
+                <Link href={"/companyInfo"}>企業情報変更</Link>
+              </div>,
+              <div
+                className="p-[12px] text-[14px]"
+                onClick={() => setShowMenu(false)}
+              >
+                <Link href={"/pdfdownload"}>マニュアル</Link>
+              </div>,
+              <div
+                className="p-[12px] text-[14px]"
+                onClick={() => setShowMenu(false)}
+              >
+                <Link href={"/ask"}>運営へのお問い合わせ</Link>
+              </div>,
+            ]}
+            {mode === "influencer" && [
+              <div
+                className="p-[12px] text-[14px]"
+                onClick={() => setShowMenu(false)}
+              >
+                <Link href={"/top/influencer"}>TOP</Link>
+              </div>,
+              <div
+                className="p-[12px] text-[14px]"
+                onClick={() => setShowMenu(false)}
+              >
+                <Link href={"/appliedCase"}>応募案件一覧</Link>
+              </div>,
+              <div
+                className="p-[12px] text-[14px]"
+                onClick={() => setShowMenu(false)}
+              >
+                <Link href={"/collectingCase"}>募集中案件一覧</Link>
+              </div>,
+              <div
+                className="p-[12px] text-[14px]"
+                onClick={() => setShowMenu(false)}
+              >
+                {/* <Link href={"/chatting"}>チャット </Link> */}チャット
+              </div>,
+              <div
+                className="p-[12px] text-[14px]"
+                onClick={() => setShowMenu(false)}
+              >
+                <Link href={"/influencerInfo"}>インフルエンサー情報変更</Link>
+              </div>,
+              <div
+                className="p-[12px] text-[14px]"
+                onClick={() => setShowMenu(false)}
+              >
+                <Link href={"/ask"}>マニュアル</Link>
+              </div>,
+              <div
+                className="p-[12px] text-[14px]"
+                onClick={() => setShowMenu(false)}
+              >
+                <Link href={"/ask"}>運営へのお問い合わせ</Link>
+              </div>,
+            ]}
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

@@ -11,10 +11,9 @@ export default function CompanyListPage() {
   const [data, setData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get("api/company");
-      if (res.data?.type !== "error") setData(res.data);
+      const res = await axios.get("api/company");      
+      if (res.data?.length) setData(res.data);
     };
-
     fetchData();
   }, []);
   const onItemClick = ({ idx }: { idx: number }) => {

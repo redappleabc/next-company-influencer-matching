@@ -1,5 +1,4 @@
 "use client";
-import { format } from "path";
 import React, { useState } from "react";
 
 export interface InputProps {
@@ -14,6 +13,7 @@ export interface InputProps {
   format?: string;
   dateTime?: boolean;
   formatMsg?: string;
+  type?: string;
   handleChange: (val: string) => void;
 }
 
@@ -28,6 +28,7 @@ const Input: React.FC<InputProps> = ({
   format,
   formatMsg,
   dateTime,
+  type,
 }: InputProps) => {
   const [error, setError] = useState("errorMsg");
   const [isValid, setIsValid] = useState(true);
@@ -37,6 +38,7 @@ const Input: React.FC<InputProps> = ({
       setIsValid(false);
       return;
     }
+    handleChange(val);
     if (format) {
       const regex = new RegExp(format);
       if (!regex.test(val.trim())) {
@@ -46,13 +48,20 @@ const Input: React.FC<InputProps> = ({
       }
     }
     setIsValid(true);
-    handleChange(val);
   };
   return (
     <div className={inputClassName}>
       <input
         key={"input"}
-        type={password ? "password" : dateTime ? "datetime-local" : "text"}
+        type={
+          password
+            ? "password"
+            : dateTime
+            ? "datetime-local"
+            : type
+            ? type
+            : "text"
+        }
         defaultValue={value}
         className={"border border-[#AEAEAE] h-[35px] pl-[12px]  w-full"}
         placeholder={placeholder}

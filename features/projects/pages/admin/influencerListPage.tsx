@@ -19,9 +19,7 @@ export default function InfluencerListPage() {
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios.get("/api/influencer");
-      if (result) {
-        setData(result.data);
-      }
+        if (result.data?.length) setData(result.data);
     };
     fetchData();
   }, []);

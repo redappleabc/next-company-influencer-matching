@@ -14,7 +14,9 @@
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",
-    "recoil": "^0.7.7"
+    "recoil": "^0.7.7",
+    "socket.io-client": "^1.7.4",
+    "utf-8-validate": "^6.0.3"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -25,12 +25,12 @@ export default function CollectedCase() {
       const result = await axios.get("/api/case/influencer");
       if (result.data.length !== 0) {
         setCaseId(result.data[0]?.id);
-        setData(result.data);
+        if (result.data?.length) setData(result.data);
       }
     };
     const fetchApplied = async () => {
       const result = await axios.get(`/api/apply?id=${user.user.targetId}`);
-      setAppliedCase(result.data);
+      if (result.data?.length) setAppliedCase(result.data);
     };
     if (user) {
       fetchApplied();
@@ -49,6 +49,12 @@ export default function CollectedCase() {
     }
   };
   const handleApply = async (caseId: string) => {
+    const { targetStatus } = user.user;
+    if (targetStatus !== "稼動中") {
+      setConfirmMsg("稼働中ではないので申請できません。");
+      setShowConfirm(true);
+      return;
+    }
     const result = await axios.post("/api/apply", {
       caseId,
       influencerId: user.user.targetId,
@@ -195,9 +201,9 @@ export default function CollectedCase() {
                       応募
                     </Button>
                   ) : (
-                    <span className="text-white bg-[#236997] p-[10px] rounded-lg shadow-sm">
+                    <div className="text-white bg-[#236997] p-[10px] rounded-lg shadow-sm">
                       申請済み
-                    </span>
+                    </div>
                   )}
                 </td>
               </tr>

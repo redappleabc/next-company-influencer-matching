@@ -9,7 +9,7 @@ const Influencer: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios.get(`/api/influencer/aInfluencer?id=${id}`);
-      setData(result.data);
+      if (result?.data) setData(result.data);
     };
     fetchData();
   }, []);

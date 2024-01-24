@@ -12,7 +12,7 @@ export default function ApplicationListPage() {
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios.get("/api/case");
-      setData(result.data);
+      if (result.data?.length) setData(result.data);
     };
     fetchData();
   }, []);

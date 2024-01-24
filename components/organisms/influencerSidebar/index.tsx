@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export default function InfluencerSidebar() {
   return (
-    <div className="bg-[#F8F9FA] min-h-[100vh] w-[264px] sp:hidden px-[20px]">
-      <div className=" pt-[120px] pb-[30px] border-b border-gray-300 ">
+    <div className="bg-[#F8F9FA] min-h-[100vh] w-[264px] sp:w-[0px] duration-200">
+      <div className=" pt-[120px] pb-[30px] px-[20px]">
         <div className="p-[12px] text-[14px]">
           <Link href={"/top/influencer"}>TOP</Link>
         </div>
@@ -13,17 +13,17 @@ export default function InfluencerSidebar() {
         <div className="p-[12px] text-[14px]">
           <Link href={"/collectingCase"}>募集中案件一覧</Link>
         </div>
-        <div className="p-[12px] text-[14px]">
+        <div className="p-[12px] text-[14px] pb-[20px] border-b border-gray-300">
           {/* <Link href={"/chatting"}>チャット </Link> */}チャット
         </div>
       </div>
-      <div className="pb-[20px] pt-[20px]  border-b border-gray-300 ">
+      <div className=" px-[20px] pb-[20px]">
         <span className="text-[#A8A8A8]">設定</span>
-        <div className="p-[12px] text-[14px]">
+        <div className="p-[12px] text-[14px] border-b pb-[20px] border-gray-300">
           <Link href={"/influencerInfo"}>インフルエンサー情報変更</Link>
         </div>
       </div>
-      <div className="pt-[20px] pb-[30px]">
+      <div className=" px-[20px] pb-[30px]">
         <div className="p-[12px] text-[14px]">
           <Link href={"/ask"}>マニュアル</Link>
         </div>
