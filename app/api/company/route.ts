@@ -103,7 +103,6 @@ export async function PUT(request: NextRequest) {
 
     const freeAccount =
       body.freeAccount == 1 || body.freeAccount == true ? 1 : 0;
-    console.log("fre", body.freeAccount, freeAccount);
 
     keys?.map((aKey) => {
       if (aKey !== "id" && aKey !== "userId") {

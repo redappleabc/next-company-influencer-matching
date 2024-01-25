@@ -62,7 +62,7 @@ body {
   border-right: 20px solid white;
 }
 .rotate{
-  animation: rotation 700ms linear infinite;
+  animation: rotation 1000ms linear infinite;
 }
 
 @keyframes rotation {

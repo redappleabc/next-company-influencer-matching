@@ -1,7 +1,15 @@
 import { atom } from "recoil";
 
 interface AuthUserState {
-  user: object | null;
+  user: {
+    id?: number;
+    name?: string;
+    role?: string;
+    email?: string;
+    targetId?: number;
+    targetStatus?: string;
+    isFree?: number;
+  } | null;
 }
 
 export const authUserState = atom<AuthUserState>({

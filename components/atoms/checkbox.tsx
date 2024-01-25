@@ -6,7 +6,7 @@ export interface CheckboxProps {
   prefix?: string;
   value?: boolean;
   title?: ReactNode;
-  handleChange: (val: boolean) => void;
+  handleChange?: (val: boolean) => void;
 }
 
 const classNames = [

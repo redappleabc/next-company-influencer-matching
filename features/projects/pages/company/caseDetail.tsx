@@ -13,7 +13,9 @@ import Modal from "../../utils/modal";
 import { useRouter } from "next/navigation";
 
 export interface caseData {
-  caseProps: Object;
+  caseProps: {
+    collectionStatus?: string;
+  };
 }
 
 export default function CaseDetailPage({ caseProps }: caseData) {
@@ -33,7 +35,7 @@ export default function CaseDetailPage({ caseProps }: caseData) {
   const [confirmMsg, setConfirmMsg] = useState("");
   useEffect(() => {
     setCaseData(caseProps);
-    setCollectionStatusTemp(caseData?.collectionStatus);
+    setCollectionStatusTemp(caseProps?.collectionStatus);
     const fetchData = async () => {
       const result = await axios.get(`/api/apply/company?id=${id}`);
       if (result.data?.length) {
@@ -57,14 +59,10 @@ export default function CaseDetailPage({ caseProps }: caseData) {
     // }
   }, [caseProps, reload]);
   useEffect(() => {
-    console.log("rund");
-    console.log(influencerId);
-
     const fetchInifluencerData = async () => {
       const result = await axios.get(
         `/api/influencer/aInfluencer?id=${influencerId}`
       );
-      console.log(result.data);
 
       if (result) setInfluencerData(result.data);
     };
@@ -124,7 +122,7 @@ export default function CaseDetailPage({ caseProps }: caseData) {
   const handleToChat = (id) => {
     const createChatRoom = async () => {
       await axios.post(`/api/chatting/room?id=${id}`);
-      router.push(`/chatting/${id}`, "_blank");
+      router.push(`/chatting/${id}`);
     };
     createChatRoom();
   };

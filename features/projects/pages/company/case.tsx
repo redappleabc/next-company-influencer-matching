@@ -21,6 +21,7 @@ const CasePage: React.FC = () => {
     casePlace: "",
     caseEnd: "",
     collectionEnd: "",
+    collectionStatus: "",
     collectionStart: "",
     collectionCnt: "",
     addition: "",
@@ -368,7 +369,10 @@ const CasePage: React.FC = () => {
         />
       </div>
       {data.id && [
-        <div className="flex  pt-[20px] pb-[8px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+        <div
+          key={"1"}
+          className="flex  pt-[20px] pb-[8px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]"
+        >
           <span className="w-[35%] mt-[5px] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
             <span>申請状態</span>
             <span className="ml-[10px] text-[#EE5736] text-[11px] invisible">
@@ -378,7 +382,10 @@ const CasePage: React.FC = () => {
           <div>{data.status}</div>
         </div>,
         data.status === "否認" ? (
-          <div className="flex  pt-[20px] pb-[8px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+          <div
+            key={"2"}
+            className="flex  pt-[20px] pb-[8px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]"
+          >
             <span className="w-[35%] mt-[5px] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
               <span>否認理由</span>
               <span className="ml-[10px] text-[#EE5736] text-[11px] invisible">

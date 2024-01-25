@@ -11,7 +11,7 @@ export interface InfluencerProps {
   influencerData?: object;
   modalMode?: boolean;
   onCancel?: () => void;
-  handleApprove?: (val: string) => void;
+  handleApprove?: (val: string, cur?: number) => void;
 }
 
 const InfluencerPage: React.FC<InfluencerProps> = ({

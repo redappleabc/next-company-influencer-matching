@@ -7,7 +7,7 @@ import { useRecoilValue } from "recoil";
 import { authUserState } from "@/recoil/atom/auth/authUserAtom";
 import { useParams } from "next/navigation";
 import axios from "@/node_modules/axios/index";
-window.socket = io("http://localhost:5000");
+const socket = io("http://localhost:5000");
 
 // import controller from "./socketController";
 
@@ -19,7 +19,7 @@ export default function ChattingPane() {
   const [msg, setMsg] = useState("");
   const { id } = useParams();
   useEffect(() => {
-    window.socket.on("message", () => {
+    socket.on("message", () => {
       setReload(!reload);
     });
     socket.emit("info", { roomId: id });
@@ -40,7 +40,7 @@ export default function ChattingPane() {
       return;
     }
     setMsg("");
-    window.socket.emit("message", { roomId: id, userId: user.user.id, msg });
+    socket.emit("message", { roomId: id, userId: user.user.id, msg });
     setReset(!reset);
   };
   let day = "";

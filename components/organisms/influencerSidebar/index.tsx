@@ -2,10 +2,10 @@ import Link from "next/link";
 
 export default function InfluencerSidebar() {
   return (
-    <div className="bg-[#F8F9FA] min-h-[100vh] w-[264px] sp:w-[0px] duration-200">
+    <div className="bg-[#F8F9FA] min-h-[100vh] w-[280px] sp:w-[0px] duration-200">
       <div className=" pt-[120px] pb-[30px] px-[20px]">
         <div className="p-[12px] text-[14px]">
-          <Link href={"/top/influencer"}>TOP</Link>
+          <Link href={"/influencerTop"}>TOP</Link>
         </div>
         <div className="p-[12px] text-[14px]">
           <Link href={"/appliedCase"}>応募案件一覧</Link>

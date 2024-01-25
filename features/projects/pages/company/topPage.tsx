@@ -11,8 +11,6 @@ export default function TopPage({ influencerMode }: topProps) {
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios.get("/api/auth/noti");
-      console.log(result.data.data);
-
       setData(result.data?.data);
     };
     fetchData();

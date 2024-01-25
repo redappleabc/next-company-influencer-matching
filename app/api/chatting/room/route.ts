@@ -80,10 +80,8 @@ export async function GET(request: NextRequest) {
   try {
     const id = request.nextUrl.searchParams.get("id") || "";
     const type = request.nextUrl.searchParams.get("type") || "";
-    console.log(id, type);
 
-    const query = `SELECT * FROM chatroom where ${type}Id = ${id}`;
-    console.log(query);
+    const query = `SELECT * FROM chatroom where ${type}Id = ${id} ORDER BY id DESC`;
 
     const rows = await executeQuery(query).catch((e) => {
       return NextResponse.json({ type: "error", msg: "no table exists" });
