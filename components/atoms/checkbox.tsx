@@ -1,10 +1,12 @@
-import React, { Children } from "react";
+import React, { Children, useEffect, useState } from "react";
 import { ReactNode } from "react";
 
 export interface CheckboxProps {
   checkBoxClassName?: string;
   prefix?: string;
+  value?: boolean;
   title?: ReactNode;
+  handleChange?: (val: boolean) => void;
 }
 
 const classNames = [
@@ -16,15 +18,26 @@ const Checkbox: React.FC<CheckboxProps> = ({
   checkBoxClassName,
   prefix,
   title,
+  value,
+  handleChange,
 }: CheckboxProps) => {
+  const [checked, setChecked] = useState(value);
+  useEffect(() => {
+    setChecked(value);
+  }, [value]);
   return (
     <span className={"flex sp:text-sp items-center " + checkBoxClassName}>
       {prefix && (
         <span className="mr-[11px] sp:text-sp text-[#A8A8A8]">{prefix}</span>
       )}
       <input
+        checked={checked}
         type="checkbox"
         className="w-[18px]  sp:text-sp mr-[10px] h-[18px] border border-[#D3D3D3]"
+        onChange={(e) => {
+          setChecked(e.target.checked);
+          handleChange(e.target.checked);
+        }}
       ></input>
       <span className="sp:text-sp">{title}</span>
     </span>

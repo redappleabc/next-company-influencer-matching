@@ -7,11 +7,11 @@ export default function LoginLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div >
-      <div >
-        <Header mode={'auth'}/>
-            {children}
-        <Footer/>
+    <div>
+      <div>
+        <Header mode={"auth"} />
+        {children}
+        <Footer />
       </div>
     </div>
   );

@@ -7,18 +7,26 @@ import Button, { ButtonType } from "@/components/atoms/button";
 export interface SearchBarProps {
   extendChild: ReactNode;
   title?: ReactNode;
+  data: object[];
+  keys: string[];
+  setVisibleData: (data: object[]) => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
   extendChild,
   title,
+  data,
+  keys,
+  setVisibleData,
 }: SearchBarProps) => {
   const [showOption, setShowOption] = useState(false);
+  const [keyword, setKeyword] = useState("");
   return (
     <div className="bg-[#F8F9FA] w-full border border-[#D3D3D3] mt-[28px] sp:mt-[0px] px-[35px] sp:px-[14px] mb-[34px] sp:mb-[14px]">
       <div className="flex gap-x-[20px] sp:gap-x-[12px] py-[12px] items-center  ">
         {!title && (
           <Input
+            handleChange={(v) => setKeyword(v)}
             inputClassName="max-w-[420px] grow sp:text-sp text-small border-[#D3D3D3]"
             placeholder=" キーワードを入力してください"
           />
@@ -26,6 +34,20 @@ const SearchBar: React.FC<SearchBarProps> = ({
         {title && title}
         {!title && (
           <Button
+            handleClick={() => {
+              const passtest = (aData) => {
+                if (keyword === "") return true;
+                let isMatch = false;
+                keys.forEach((aKey) => {
+                  if (aData[aKey].indexOf(keyword) !== -1) {
+                    console.log(aData[aKey], keyword);
+                  }
+                  isMatch ||= aData[aKey].indexOf(keyword) !== -1;
+                });
+                return isMatch;
+              };
+              setVisibleData(data.filter(passtest));
+            }}
             buttonType={ButtonType.DEFAULT}
             buttonClassName="sp:text-small sp:px-[12px]"
           >

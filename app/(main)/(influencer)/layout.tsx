@@ -9,7 +9,7 @@ export default function LoginLayout({
   return (
     <div>
       <div>
-        <Header mode={"main"} />
+        <Header mode={"influencer"} />
         <div className="flex">
           <InfluencerSidebar />
           <div className="w-full bg-[white]">{children}</div>

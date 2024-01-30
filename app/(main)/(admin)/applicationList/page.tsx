@@ -2,7 +2,7 @@ import Applicationlistpage from "@/features/projects/pages/admin/applicationList
 
 function Applicationlist() {
   return (
-    <div>
+    <div className="h-full">
       <Applicationlistpage />
     </div>
   );

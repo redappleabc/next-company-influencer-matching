@@ -2,7 +2,7 @@ import AppliedListPage from "@/features/projects/pages/company/appliedList";
 
 function AppleidList() {
   return (
-    <div>
+    <div className="h-full">
       <AppliedListPage />
     </div>
   );
