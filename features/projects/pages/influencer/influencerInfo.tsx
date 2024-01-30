@@ -100,6 +100,7 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
       if (result.data) {
         setData(result.data);
         setGenre(result.data.genre);
+        setIsLoading(false);
       }
     };
     if (!applyMode && authUser) fetchData();
