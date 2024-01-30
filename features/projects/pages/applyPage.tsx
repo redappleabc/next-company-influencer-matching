@@ -11,16 +11,24 @@ export default function ApplyPage() {
   const [type, setType] = useState("企業");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const onAppy = async () => {
     if (email === "") {
       setError("メールアドレスを入力する必要があります。");
       return;
     }
+    let mailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!mailPattern.test(email.trim())) {
+      setError("メールアドレス形式ではありません");
+      return;
+    }
+    setIsLoading(true);
     const result = await axios.put("api/user", { email, type });
     if (result.data.type === "success") {
       router.push("/applyConfirm");
     }
+    setIsLoading(false);
   };
   return (
     <div className="bg-[#F5F5F5]  py-[300px] sp:py-[200px]">
@@ -51,8 +59,10 @@ export default function ApplyPage() {
             />
           </div>
         </div>
-        <div className="flex justify-center w-full items-center mt-[30px] mb-[20px] pr-[70px] sp:pr-[30px] sp:mb-[30px]">
-          <span className="mr-[20px] w-[100px] text-right">メールアドレス</span>
+        <div className="flex justify-center w-full mt-[30px] mb-[20px] pr-[70px] sp:pr-[30px] sp:mb-[30px]">
+          <span className="mr-[20px] mt-[5px] w-[100px] text-right">
+            メールアドレス
+          </span>
           <Input
             handleChange={(val) => setEmail(val)}
             inputClassName={"max-w-[250px] grow"}
@@ -60,7 +70,18 @@ export default function ApplyPage() {
         </div>
         <div className="text-center mb-[10px]">
           <Button handleClick={onAppy} buttonType={ButtonType.PRIMARY}>
-            送信する
+            <div className="flex items-center">
+              {isLoading ? (
+                <img
+                  src="/img/refresh.svg"
+                  alt="rotate"
+                  className="mr-[5px] rotate"
+                />
+              ) : (
+                ""
+              )}
+              送信する
+            </div>
           </Button>
         </div>
         {error !== "" && (

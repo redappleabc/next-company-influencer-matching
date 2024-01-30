@@ -62,15 +62,13 @@ const Header: React.FC<Headerprops> = ({ mode }: Headerprops) => {
           src="/img/logout.svg"
           className="lg:hidden h-[14px] mx-[22px]"
           onClick={() => {
-            setAuthUser({ user: null });
-            localStorage.removeItem("user");
+            router.push("/logout");
           }}
         />
         <div
           className="text-[white] h-[full] flex items-center px-[32px] sp:hidden cursor-pointer"
           onClick={() => {
-            setAuthUser({ user: null });
-            localStorage.removeItem("user");
+            router.push("/logout");
           }}
         >
           ログアウト
@@ -83,7 +81,13 @@ const Header: React.FC<Headerprops> = ({ mode }: Headerprops) => {
             : "relative lg:hidden opacity-0 duration-500"
         }
       >
-        <div className="bg-[#8F8F8F] text-[white] absolute pointer-events-none">
+        <div
+          className={
+            showMenu
+              ? "bg-[#8F8F8F] text-[white] absolute"
+              : "bg-[#8F8F8F] text-[white] absolute pointer-events-none"
+          }
+        >
           <div className="px-[20px]">
             {mode === "admin" && [
               <div
@@ -186,7 +190,7 @@ const Header: React.FC<Headerprops> = ({ mode }: Headerprops) => {
                 className="p-[12px] text-[14px]"
                 onClick={() => setShowMenu(false)}
               >
-                {/* <Link href={"/chatting"}>チャット </Link> */}チャット
+                <Link href={"/chattingInf"}>チャット </Link>
               </div>,
               <div
                 key={"influencer5"}

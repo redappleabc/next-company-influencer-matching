@@ -10,7 +10,7 @@ export interface TextAreaProps {
   requirMsg?: string;
   value?: string;
   handleChange?: (val: string) => void;
-  handleCtrlEnter?: (val: string) => void;
+  handleCtrlEnter?: () => void;
 }
 
 const TextArea: React.FC<TextAreaProps> = ({
@@ -26,6 +26,7 @@ const TextArea: React.FC<TextAreaProps> = ({
 }: TextAreaProps) => {
   const [error, setError] = useState("errorMsg");
   const [isValid, setIsValid] = useState(true);
+  const [textValue, setTextValue] = useState(value);
   const validate = (val: string) => {
     if (!notRequired && val === "") {
       setError(requirMsg);
@@ -34,11 +35,15 @@ const TextArea: React.FC<TextAreaProps> = ({
       return;
     }
     handleChange(val);
+    setTextValue(val);
     setIsValid(true);
   };
   useEffect(() => {
     document.getElementById("mainArea").value = "";
   }, [reset]);
+  useEffect(() => {
+    setTextValue(value);
+  }, [value]);
   return (
     <div className={textAreaClassName}>
       <textarea
@@ -48,7 +53,8 @@ const TextArea: React.FC<TextAreaProps> = ({
             handleCtrlEnter();
           }
         }}
-        defaultValue={value}
+        // defaultValue={value}
+        value={textValue}
         onChange={(e) => validate(e.target.value)}
         className={
           resizable

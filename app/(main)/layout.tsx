@@ -16,7 +16,9 @@ const Auth = ({ children }: { children: React.ReactNode }) => {
       parsedUser = null;
     }
   }
-  if (!parsedUser) router.push("logout");
+  if (!parsedUser) {
+    router.push("/logout");
+  }
   if (savedUser && !authUser.user) {
     if (savedUser) {
       setAuthUser({ user: parsedUser });

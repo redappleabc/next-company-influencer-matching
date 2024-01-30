@@ -39,6 +39,12 @@ export async function POST(request: NextRequest) {
     ).catch((e) => {
       return NextResponse.json({ type: "error" });
     });
+    if (!result1 || !result1.length || result1.length === 0) {
+      return NextResponse.json({
+        type: "error",
+        msg: "入力に誤りがあります。",
+      });
+    }
     const targetId = result1[0].id;
     const targetStatus = result1[0].status;
     const isFree = result1[0].freeAccount ? result1[0].freeAccount : true;

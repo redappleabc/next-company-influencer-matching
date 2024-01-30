@@ -58,6 +58,7 @@ export async function POST(request: NextRequest) {
       date VARCHAR(255) NOT NULL,
       reason VARCHAR(255) NOT NULL,
       companyId int,
+      edited BOOLEAN NOT NULL DEFAULT FALSE,
       FOREIGN KEY (companyId) REFERENCES company(id)
     )
   `);
@@ -81,6 +82,7 @@ export async function GET() {
     const query = `SELECT cases.*, company.companyName
     FROM cases
     LEFT JOIN company ON cases.companyId=company.id
+    WHERE cases.status != '申請前'
     ORDER BY cases.id DESC`;
     // const query = `SELECT * FROM cases`;
     const rows = await executeQuery(query).catch((e) => {
@@ -94,13 +96,17 @@ export async function GET() {
 }
 export async function PUT(request: NextRequest) {
   try {
-    const body = await request.json();
+    const requestBody = await request.json();
+    const body = { ...requestBody, edited: true };
     let query = "UPDATE cases SET ";
     const keys = Object.keys(body);
 
     keys?.map((aKey) => {
       if (aKey !== "id" && aKey !== "companyId" && aKey !== "companyName") {
-        query += `${aKey} = '${body[aKey]}', `;
+        query +=
+          aKey === "edited"
+            ? `${aKey} = ${body[aKey]}, `
+            : `${aKey} = '${body[aKey]}', `;
       }
     });
     query = query.slice(0, -2);

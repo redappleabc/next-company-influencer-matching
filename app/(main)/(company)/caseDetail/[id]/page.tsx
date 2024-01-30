@@ -15,7 +15,7 @@ const CaseDetail: React.FC = () => {
     fetchData();
   }, []);
   return (
-    <div>
+    <div className="h-full">
       <CaseDetailPage caseProps={data} />
     </div>
   );

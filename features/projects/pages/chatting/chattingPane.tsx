@@ -8,13 +8,15 @@ import { authUserState } from "@/recoil/atom/auth/authUserAtom";
 import { useParams } from "next/navigation";
 import axios from "@/node_modules/axios/index";
 const socket = io("http://localhost:5000");
-
+import Image from "next/image";
+import ChattingRooms from "./rooms";
 // import controller from "./socketController";
 
 export default function ChattingPane() {
   const user = useRecoilValue(authUserState);
   const [data, setData] = useState([]);
   const [reload, setReload] = useState(false);
+  const [showRooms, setShowRooms] = useState(false);
   const [reset, setReset] = useState(false);
   const [msg, setMsg] = useState("");
   const { id } = useParams();
@@ -46,6 +48,28 @@ export default function ChattingPane() {
   let day = "";
   return (
     <div>
+      <div className="absolute lg:hidden  right-[20px] top-[180px]">
+        <Image
+          alt="hamburger"
+          width={70}
+          height={70}
+          src="/img/hamburger.svg"
+          className="h-[14px] mx-[22px]"
+          onClick={() => {
+            setShowRooms(!showRooms);
+          }}
+        />
+      </div>
+      <div
+        className={
+          showRooms
+            ? "lg:hidden opacity-100 "
+            : "lg:hidden opacity-0 duration-200"
+        }
+      >
+        <ChattingRooms />
+      </div>
+
       <div
         className="h-[590px] bg-[#F8F9FA] pt-[100px] overflow-y-auto scroll-smooth"
         id="pane"
@@ -56,7 +80,7 @@ export default function ChattingPane() {
 
           return [
             showDay && (
-              <div className="w-full text-center  mb-[30px] ">
+              <div key={"1"} className="w-full text-center  mb-[30px] ">
                 <span className="text-[white] rounded-[15px] bg-[#DEDEDE] px-[12px] py-[5px]">
                   {aData.day}
                 </span>
@@ -98,6 +122,7 @@ export default function ChattingPane() {
           placeholder="メッセージを入力"
           textAreaClassName="h-[120px] border-0 grow"
           handleChange={(val) => setMsg(val)}
+          value={msg}
         />
         <Button
           handleClick={handleSendMsg}

@@ -90,6 +90,7 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
   const [showConfirm, setShowConfirm] = useState(false);
   const [error, setError] = useState("");
   const [agree, setAgree] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   useEffect(() => {
     const fetchData = async () => {
@@ -156,6 +157,7 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
       setError("個人情報の取り扱いに同意する必要があります。");
       return;
     }
+    setIsLoading(true);
     let result;
     if (applyMode) {
       result = await axios.post("api/influencer", body);
@@ -169,6 +171,7 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
         setShowConfirm(true);
       }
     }
+    setIsLoading(false);
   };
   return (
     <div
@@ -181,8 +184,8 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
       <div
         className={
           showConfirm
-            ? "bg-black bg-opacity-25 w-full h-full fixed left-0 overflow-auto duration-500"
-            : "bg-black bg-opacity-25 w-full h-full fixed left-0 overflow-auto opacity-0 pointer-events-none duration-500"
+            ? "bg-black bg-opacity-25 w-full h-full fixed left-0 top-0 overflow-auto duration-500"
+            : "bg-black bg-opacity-25 w-full h-full fixed left-0 top-0 overflow-auto opacity-0 pointer-events-none duration-500"
         }
       >
         <Modal
@@ -232,8 +235,8 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
           <option value={"その他"}>その他</option>
         </Select>{" "}
       </div>
-      <div className="flex items-center py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
-        <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
+      <div className="flex  py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+        <span className="mt-[5px] w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>ニックネーム</span>
         </span>
         <Input
@@ -243,8 +246,8 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
           value={data ? data.nickName : ""}
         />
       </div>
-      <div className="flex items-center py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
-        <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
+      <div className="flex  py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+        <span className="mt-[5px] w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>電話番号</span>
         </span>
         <Input
@@ -256,8 +259,8 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
           value={data ? data.phoneNumber : ""}
         />
       </div>
-      <div className="flex items-center py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
-        <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
+      <div className="flex  py-[15px] w-[40%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+        <span className="mt-[5px] w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>メールアドレス</span>
         </span>
         <Input
@@ -858,7 +861,9 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
             <span className="flex items-center">
               <span>更新</span>
               <img
-                className="w-[14px] ml-[5px]"
+                className={
+                  isLoading ? "w-[14px] ml-[5px] rotate" : "w-[14px] ml-[5px]"
+                }
                 src="/img/refresh.svg"
                 alt="refresh"
               />
@@ -871,9 +876,18 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
             buttonClassName="ml-[40px]"
             handleClick={() => handleSend(true)}
           >
-            <span className="flex items-center">
-              <span>送信する</span>
-            </span>
+            <div className="flex items-center">
+              {isLoading ? (
+                <img
+                  src="/img/refresh.svg"
+                  alt="rotate"
+                  className="mr-[5px] rotate"
+                />
+              ) : (
+                ""
+              )}
+              送信する
+            </div>
           </Button>
         )}
         {!applyMode && (

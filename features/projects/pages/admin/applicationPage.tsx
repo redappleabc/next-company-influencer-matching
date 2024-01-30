@@ -293,8 +293,6 @@ const ApplicationPage: React.FC<ApplicatinProps> = ({
             textAreaClassName="max-w-[300px] h-[95px] grow border-[#D3D3D3] "
             placeholder="否決理由を入力してください。"
             handleChange={(val) => {
-              console.log(val);
-
               setReason(val);
             }}
           />

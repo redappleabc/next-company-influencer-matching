@@ -51,9 +51,9 @@ const NotiPage: React.FC = () => {
             <span className="text-[#6F6F6F]">重要なお知らせ</span>
             <TextArea
               value={data?.mainNoti}
-              handleChange={(val) => setData({ ...data, mainNoti: val })}
-              textAreaClassName="mt-[20px] sp:mt-[10px] w-[100%] h-[120px]  "
+              textAreaClassName="mt-[20px] sp:mt-[10px] w-[100%] h-[120px]   "
               placeholder="お知らせを入力してください。"
+              handleChange={(val) => setData({ ...data, mainNoti: val })}
             />
             <div className="w-[100%] text-right mt-[20px] sp:mt-[10px]">
               <Button

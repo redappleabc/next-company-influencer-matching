@@ -24,6 +24,20 @@ interface RowType extends RowDataPacket {
 export async function POST(request: NextRequest) {
   try {
     let body = await request.json();
+
+    const query3 = `SELECT * FROM users where email = '${body.emailAddress}'`;
+    const rows = await executeQuery(query3).catch((e) => {
+      return NextResponse.json({ type: "error" });
+    });
+    if (!rows && !rows.length && rows.length === 0) {
+      return NextResponse.json({ type: "error" });
+    }
+    const user = rows[0];
+    await executeQuery(
+      `UPDATE users SET name = '${body.companyName}' WHERE id = ${user.id}`
+    );
+    const userId = user.id;
+
     const today = new Date();
     const todayString = `${today.getFullYear()}/${
       today.getMonth() + 1
@@ -31,6 +45,11 @@ export async function POST(request: NextRequest) {
     const defaultValues = {
       status: "停止中",
       date: todayString,
+      thisMonthCollectionCnt: 0,
+      conCurrentCnt: 0,
+      monthlyCollectionCnt: 1,
+      concurrentCollectionCnt: 1,
+      userId: userId,
     };
     body = { ...body, ...defaultValues };
     let query1 = "";
@@ -59,8 +78,10 @@ export async function POST(request: NextRequest) {
       status VARCHAR(255) NOT NULL,
       payment VARCHAR(255) NOT NULL,
       paymentFailed VARCHAR(255) NOT NULL,
-      monthlyCollectionCnt VARCHAR(255) NOT NULL,
-      concurrentCollectionCnt VARCHAR(255) NOT NULL,
+      monthlyCollectionCnt int NOT NULL,
+      concurrentCollectionCnt int NOT NULL,
+      thisMonthCollectionCnt int,
+      conCurrentCnt int,
       plan VARCHAR(255) NOT NULL,
       freeAccount BOOLEAN NOT NULL DEFAULT FALSE,
       userId int,
@@ -85,7 +106,7 @@ export async function POST(request: NextRequest) {
 }
 export async function GET() {
   try {
-    const query = "SELECT * FROM company";
+    const query = "SELECT * FROM company ORDER BY id DESC";
     const rows = await executeQuery(query).catch((e) => {
       return NextResponse.json({ type: "error", msg: "no table exists" });
     });

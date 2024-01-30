@@ -95,7 +95,7 @@ export default function LoginPage() {
                   className="mr-[5px] rotate"
                 />
               ) : (
-                <img src="/img/apply.svg" alt="rotate" className="mr-[5px]" />
+                ""
               )}
               ログイン
             </div>

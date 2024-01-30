@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
   try {
     const id = request.nextUrl.searchParams.get("id") || "";
 
-    const query = `SELECT * FROM company where id = ${id}`;
+    const query = `SELECT * FROM company where id = ${id}  ORDER BY id DESC`;
     const rows = await executeQuery(query).catch((e) => {
       return NextResponse.json({ type: "error" });
     });

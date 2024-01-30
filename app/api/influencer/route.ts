@@ -4,6 +4,20 @@ import { executeQuery } from "../util/db";
 export async function POST(request: NextRequest) {
   try {
     let body = await request.json();
+
+    const query3 = `SELECT * FROM users where email = '${body.emailAddress}'`;
+    const rows = await executeQuery(query3).catch((e) => {
+      return NextResponse.json({ type: "error" });
+    });
+    if (!rows && !rows.length && rows.length === 0) {
+      return NextResponse.json({ type: "error" });
+    }
+    const user = rows[0];
+    await executeQuery(
+      `UPDATE users SET name = '${body.influencerName}' WHERE id = ${user.id}`
+    );
+    const userId = user.id;
+
     const today = new Date();
     const todayString = `${today.getFullYear()}/${
       today.getMonth() + 1
@@ -11,6 +25,7 @@ export async function POST(request: NextRequest) {
     const defaultValues = {
       status: "承認待ち",
       date: todayString,
+      userId: userId,
     };
     body = { ...body, ...defaultValues };
     let query1 = "";
@@ -48,6 +63,7 @@ export async function POST(request: NextRequest) {
       0,
       -1
     )}) VALUES(${query2.slice(0, -1)})`;
+    console.log(query);
 
     await executeQuery(query).catch((e) => {
       return NextResponse.json({ type: "error", msg: "error" });
@@ -60,7 +76,7 @@ export async function POST(request: NextRequest) {
 }
 export async function GET() {
   try {
-    const query = "SELECT * FROM influencer";
+    const query = "SELECT * FROM influencer ORDER BY id DESC";
     const rows = await executeQuery(query).catch((e) => {
       return NextResponse.json({ type: "error", msg: "no table exists" });
     });

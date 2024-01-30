@@ -2,8 +2,12 @@
 import Button from "@/components/atoms/button";
 import { ButtonType } from "@/components/atoms/button";
 import Link from "next/link";
+import { useEffect } from "react";
 
 export default function LoginPage() {
+  useEffect(() => {
+    localStorage.removeItem("user");
+  }, []);
   return (
     <div className="bg-[#F5F5F5]  py-[300px] sp:py-[200px]">
       <div className="bg-[white] px-[20px] w-[614px] sp:w-[90%] rounded-[40px] block m-auto py-[70px] sp:py-[20px] shadow-lg">

@@ -36,6 +36,7 @@ const Input: React.FC<InputProps> = ({
     if (!notRequired && val === "") {
       setError(requirMsg);
       setIsValid(false);
+      handleChange(val);
       return;
     }
     handleChange(val);
@@ -69,7 +70,7 @@ const Input: React.FC<InputProps> = ({
           validate(e.target.value);
         }}
       ></input>
-      {requirMsg && (
+      {(requirMsg || formatMsg) && (
         <div
           className={
             isValid

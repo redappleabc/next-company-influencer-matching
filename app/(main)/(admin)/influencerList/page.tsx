@@ -2,7 +2,7 @@ import Influencerlistpage from "@/features/projects/pages/admin/influencerListPa
 
 function InfluencerList() {
   return (
-    <div>
+    <div className="h-full">
       <Influencerlistpage />
     </div>
   );

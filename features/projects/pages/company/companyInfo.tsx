@@ -19,6 +19,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
   const authUser = useRecoilValue(authUserState);
   const [showConfirm, setShowConfirm] = useState(false);
   const [agree, setAgree] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState({
     companyName: "",
     companyNameGana: "",
@@ -31,6 +32,10 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
     emailAddress: "",
     postalCode: "",
     address: "",
+    payment: "",
+    building: "",
+    date: "",
+    status: "",
   });
   const msgs = {
     companyName: "企業名を入力してください",
@@ -93,6 +98,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
       return;
     }
     if (!isValid) return;
+    setIsLoading(true);
     if (isApply) {
       const res = await axios.post(`api/company`, data);
       if (res.data.type === "success") {
@@ -106,6 +112,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
         setShowConfirm(true);
       }
     }
+    setIsLoading(false);
   };
 
   return (
@@ -119,8 +126,8 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
       <div
         className={
           showConfirm
-            ? "bg-black bg-opacity-25 w-full h-full fixed left-0 overflow-auto duration-500"
-            : "bg-black bg-opacity-25 w-full h-full fixed left-0 overflow-auto opacity-0 pointer-events-none duration-500"
+            ? "bg-black bg-opacity-25 w-full h-full fixed left-0 top-0 overflow-auto duration-500"
+            : "bg-black bg-opacity-25 w-full h-full fixed left-0 top-0 overflow-auto opacity-0 pointer-events-none duration-500"
         }
       >
         <Modal
@@ -377,7 +384,18 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
             handleClick={() => handleApply(true)}
           >
             <span className="flex ">
-              <span>送信する</span>
+              <div className="flex items-center">
+                {isLoading ? (
+                  <img
+                    src="/img/refresh.svg"
+                    alt="rotate"
+                    className="mr-[5px] rotate"
+                  />
+                ) : (
+                  ""
+                )}
+                送信する
+              </div>
             </span>
           </Button>
         </div>
@@ -391,7 +409,9 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
             <span className="flex ">
               <span>更新</span>
               <img
-                className="w-[14px] ml-[5px]"
+                className={
+                  isLoading ? "w-[14px] ml-[5px] rotate" : "w-[14px] ml-[5px]"
+                }
                 src="/img/refresh.svg"
                 alt="refresh"
               />

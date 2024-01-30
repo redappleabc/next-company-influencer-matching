@@ -14,21 +14,30 @@ export default function AskPage() {
           <span>お名前</span>
           <span className="ml-[10px] text-[#EE5736] text-[11px]">必須</span>
         </span>
-        <Input inputClassName="max-w-[250px] grow border-[#D3D3D3]" />
+        <Input
+          handleChange={(val) => console.log(val)}
+          inputClassName="max-w-[250px] grow border-[#D3D3D3]"
+        />
       </div>
       <div className="flex py-[20px] w-[40%] sp:w-[90%] m-auto border-b-[1px] border-[#DDDDDD]">
         <span className="w-[40%] flex justify-end mr-[67px]">
           <span>メールアドレス</span>
           <span className="ml-[10px] text-[#EE5736] text-[11px]">必須</span>
         </span>
-        <Input inputClassName="max-w-[250px] grow border-[#D3D3D3]" />
+        <Input
+          handleChange={(val) => console.log(val)}
+          inputClassName="max-w-[250px] grow border-[#D3D3D3]"
+        />
       </div>
       <div className="flex py-[20px] w-[40%] sp:w-[90%] m-auto border-b-[1px] border-[#DDDDDD]">
         <span className="w-[40%] flex justify-end mr-[67px]">
           <span>メールアドレス確認</span>
           <span className="ml-[10px] text-[#EE5736] text-[11px]">必須</span>
         </span>
-        <Input inputClassName="max-w-[250px] grow border-[#D3D3D3]" />
+        <Input
+          handleChange={(val) => console.log(val)}
+          inputClassName="max-w-[250px] grow border-[#D3D3D3]"
+        />
       </div>
       <div className="flex py-[20px] w-[40%] sp:w-[90%] m-auto border-b-[1px] border-[#DDDDDD]">
         <span className="w-[40%] flex justify-end mr-[67px]">
@@ -37,7 +46,10 @@ export default function AskPage() {
             必須
           </span>
         </span>
-        <Input inputClassName="max-w-[250px] grow border border-[#D3D3D3] h-[33px]"></Input>
+        <Input
+          handleChange={(val) => console.log(val)}
+          inputClassName="max-w-[250px] grow border border-[#D3D3D3] h-[33px]"
+        ></Input>
       </div>
       <div className="flex py-[20px] w-[40%] sp:w-[90%] m-auto border-b-[1px] border-[#DDDDDD]">
         <span className="w-[40%] flex justify-end  mt-[7px] mr-[67px]">
@@ -48,7 +60,10 @@ export default function AskPage() {
         </span>
         {/* <Input inputClassName="max-w-[250px] grow border border-[#D3D3D3] h-[33px]"></Input> */}
 
-        <TextArea textAreaClassName="max-w-[390px] grow h-[95px]" />
+        <TextArea
+          handleChange={(val) => console.log(val)}
+          textAreaClassName="max-w-[390px] grow h-[95px]"
+        />
       </div>
       <div className="flex py-[20px] w-[40%] sp:w-[90%] m-auto">
         <span className="w-[40%] flex justify-end mr-[67px]">
@@ -57,7 +72,10 @@ export default function AskPage() {
             必須
           </span>
         </span>
-        <Input inputClassName="max-w-[250px] grow border border-[#D3D3D3] h-[33px]"></Input>
+        <Input
+          handleChange={(val) => console.log(val)}
+          inputClassName="max-w-[250px] grow border border-[#D3D3D3] h-[33px]"
+        ></Input>
       </div>
       <div className="mt-[6px]">
         ※本システムをご利用中の方はIDを入力してください

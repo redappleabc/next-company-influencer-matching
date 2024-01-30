@@ -3,12 +3,32 @@
 import Checkbox from "@/components/atoms/checkbox";
 import SearchBar from "@/components/organisms/searchbar";
 import { useEffect, useState } from "react";
+import ReactPaginate from "react-paginate";
 import Link from "next/link";
 import axios from "axios";
+import Image from "next/image";
 
 export default function InfluencerListPage() {
   const [active, setActive] = useState(null);
   const [data, setData] = useState([]);
+  const [visibleData, setVisibleData] = useState([]);
+  const [optionedData, setOptionedData] = useState([]);
+  const [options, setOptions] = useState([]);
+  const [options1, setOptions1] = useState([]);
+  const [itemOffset, setItemOffset] = useState(0);
+  const itemsPerPage = 1;
+  const endOffset = itemOffset + itemsPerPage;
+  const currentItems = optionedData.slice(itemOffset, endOffset);
+  const pageCount = Math.ceil(optionedData.length / itemsPerPage);
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % optionedData.length;
+    console.log(
+      `User requested page number ${event.selected}, which is offset ${newOffset}`
+    );
+    setItemOffset(newOffset);
+  };
+  const [isLoading, setIsLoading] = useState(true);
+
   const onItemClick = ({ idx }: { idx: Number }) => {
     if (active === idx) {
       setActive(null);
@@ -18,16 +38,111 @@ export default function InfluencerListPage() {
   };
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       const result = await axios.get("/api/influencer");
-        if (result.data?.length) setData(result.data);
+      if (result.data?.length) {
+        setData(result.data);
+        setOptionedData(result.data);
+        setVisibleData(result.data);
+      }
+      setIsLoading(false);
     };
     fetchData();
   }, []);
+  const makeOptioinedData = (visibleData, result, result1) => {
+    let resultData = [];
+    if (result.length === 0) {
+      resultData = visibleData;
+    }
+    if (result.some((aOption) => aOption === "承認待ち")) {
+      resultData = [
+        ...resultData,
+        ...visibleData.filter((aData) => aData.status === "承認待ち"),
+      ];
+    }
+    if (result.some((aOption) => aOption === "稼動中")) {
+      resultData = [
+        ...resultData,
+        ...visibleData.filter((aData) => aData.status === "稼動中"),
+      ];
+    }
+    if (result.some((aOption) => aOption === "停止中")) {
+      resultData = [
+        ...resultData,
+        ...visibleData.filter((aData) => aData.status === "停止中"),
+      ];
+    }
+    if (result1.length === 0) {
+      setOptionedData(resultData);
+      return;
+    }
+    let resultData1 = [];
+    if (result1.some((aOption) => aOption === "instagram")) {
+      resultData1 = [
+        ...resultData1,
+        ...resultData.filter((aData) => aData.instagram !== ""),
+      ];
+    }
+    if (result1.some((aOption) => aOption === "tiktok")) {
+      resultData1 = [
+        ...resultData1,
+        ...resultData.filter((aData) => aData.tiktok !== ""),
+      ];
+    }
+    if (result1.some((aOption) => aOption === "x")) {
+      resultData1 = [
+        ...resultData1,
+        ...resultData.filter((aData) => aData.x !== ""),
+      ];
+    }
+    if (result1.some((aOption) => aOption === "facebook")) {
+      resultData1 = [
+        ...resultData1,
+        ...resultData.filter((aData) => aData.facebook !== ""),
+      ];
+    }
+    if (result1.some((aOption) => aOption === "youtube")) {
+      resultData1 = [
+        ...resultData1,
+        ...resultData.filter((aData) => aData.youtube !== ""),
+      ];
+    }
+    if (result1.some((aOption) => aOption === "etc")) {
+      resultData1 = [
+        ...resultData1,
+        ...resultData.filter((aData) => aData.otherSNS !== ""),
+      ];
+    }
+    setOptionedData(resultData1.sort((a, b) => -(a.id - b.id)));
+  };
+  const handleOptionChange = (val) => {
+    const isAlready = options.some((a) => a === val);
+    const result = isAlready
+      ? options.filter((aOptioin) => aOptioin !== val)
+      : [...options, val];
+    setOptions(result);
+    makeOptioinedData(visibleData, result, options1);
+  };
+  const handleOptionChange1 = (val) => {
+    const isAlready = options1.some((a) => a === val);
+    const result = isAlready
+      ? options1.filter((aOptioin) => aOptioin !== val)
+      : [...options1, val];
+    setOptions1(result);
+    makeOptioinedData(visibleData, options, result);
+  };
+  const handleSearch = (data) => {
+    setVisibleData(data);
+    makeOptioinedData(data, options, options1);
+  };
   return (
-    <div>
-      <div className="px-[30px] sp:px-[12px] pt-[110px] pb-[30px]">
+    <div className="h-full">
+      <div className="flex flex-col h-full px-[30px] sp:px-[12px] pt-[110px] pb-[30px]">
         <div className="text-title sp:hidden">インフルエンサー一覧</div>
         <SearchBar
+          data={data}
+          setVisibleData={handleSearch}
+          keys={["nickName", "influencerName", "date"]}
           extendChild={
             <div>
               <div className="mt-[30px] sp:mt-[10px] text-small text-[#3F8DEB] font-bold">
@@ -38,15 +153,24 @@ export default function InfluencerListPage() {
                   <Checkbox
                     prefix="状態 ： "
                     title={"承認待ち"}
+                    handleChange={(val) => handleOptionChange("承認待ち")}
                     checkBoxClassName="mr-[20px]"
                   />
-                  <Checkbox title={"稼動中"} checkBoxClassName="mr-[20px]" />
-                  <Checkbox title={"停止中"} />
+                  <Checkbox
+                    title={"稼動中"}
+                    checkBoxClassName="mr-[20px]"
+                    handleChange={(val) => handleOptionChange("稼動中")}
+                  />
+                  <Checkbox
+                    title={"停止中"}
+                    handleChange={(val) => handleOptionChange("停止中")}
+                  />
                 </div>
                 <div className="flex my-[8px]">
                   <Checkbox
                     // prefix="決算 : "
                     prefix="SNS ： "
+                    handleChange={(val) => handleOptionChange1("instagram")}
                     title={
                       <img
                         className="w-[35px]"
@@ -57,6 +181,7 @@ export default function InfluencerListPage() {
                     checkBoxClassName="mr-[20px]"
                   />
                   <Checkbox
+                    handleChange={(val) => handleOptionChange1("tiktok")}
                     title={
                       <img
                         className="w-[35px]"
@@ -67,12 +192,14 @@ export default function InfluencerListPage() {
                     checkBoxClassName="mr-[20px]"
                   />
                   <Checkbox
+                    handleChange={(val) => handleOptionChange1("x")}
                     title={
                       <img className="w-[35px]" src="/img/sns/x.svg" alt="x" />
                     }
                     checkBoxClassName="mr-[20px]"
                   />
                   <Checkbox
+                    handleChange={(val) => handleOptionChange1("youtube")}
                     title={
                       <img
                         className="w-[35px]"
@@ -83,6 +210,7 @@ export default function InfluencerListPage() {
                     checkBoxClassName="mr-[20px]"
                   />
                   <Checkbox
+                    handleChange={(val) => handleOptionChange1("facebook")}
                     title={
                       <img
                         className="w-[35px]"
@@ -92,94 +220,139 @@ export default function InfluencerListPage() {
                     }
                     checkBoxClassName="mr-[20px]"
                   />
-                  <Checkbox title={"etc."} checkBoxClassName="mr-[20px]" />
+                  <Checkbox
+                    title={"etc."}
+                    handleChange={(val) => handleOptionChange1("etc")}
+                    checkBoxClassName="mr-[20px]"
+                  />
                 </div>
               </div>
             </div>
           }
         />
         <div className="text-[14px] text-[#A9A9A9] mb-[10px] sp:text-spsmall">
-          該当数：10件
+          {`該当数：${optionedData.length}件`}
         </div>
-        <table className="w-[100%] text-[14px] sp:hidden">
-          <thead>
-            <tr>
-              <td className="px-[35px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3] ">
-                ニックネーム
-              </td>
-              <td className="px-[35px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3] ">
-                お名前
-              </td>
-              <td className="px-[35px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3]">
-                SNSの種類
-              </td>
-              <td className="px-[35px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3]">
-                状態
-              </td>
-              <td className="px-[35px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3]">
-                登録・申請日
-              </td>
-            </tr>
-          </thead>
-          <tbody>
-            {data?.map((aData, idx) => (
-              <tr key={idx}>
-                <td className="px-[35px] py-[25px]  border border-[#D3D3D3] hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
-                  <Link href={`/influencer/${aData.id}`}>{aData.nickName}</Link>
-                </td>
-                <td className="px-[35px] py-[25px]  border border-[#D3D3D3] ">
-                  {aData.influencerName}
-                </td>
-                <td className="px-[35px] py-[25px]  border border-[#D3D3D3]">
-                  <div className="flex items-center gap-[15px]">
-                    {aData.instagram && (
-                      <img
-                        className="w-[35px]"
-                        src="/img/sns/Instagram.svg"
-                        alt="instagram"
-                      />
-                    )}
-                    {aData.tiktok && (
-                      <img
-                        className="w-[35px]"
-                        src="/img/sns/tiktok.svg"
-                        alt="tiktok"
-                      />
-                    )}
-                    {aData.x && (
-                      <img className="w-[35px]" src="/img/sns/x.svg" alt="x" />
-                    )}
-                    {aData.youtube && (
-                      <img
-                        className="w-[35px]"
-                        src="/img/sns/youtube.svg"
-                        alt="youtube"
-                      />
-                    )}
-                    {aData.facebook && (
-                      <img
-                        className="w-[35px]"
-                        src="/img/sns/facebook.svg"
-                        alt="youtube"
-                      />
-                    )}
-                    {aData.otherSNS !== "" && (
-                      <span className="text-[#C0C0C0]">etc.</span>
-                    )}
-                  </div>
-                </td>
-                <td className="px-[35px] py-[25px]  border border-[#D3D3D3]">
-                  {aData.status}
-                </td>
-                <td className="px-[35px] py-[25px]  border border-[#D3D3D3]">
-                  {aData.date}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {isLoading ? (
+          <Image
+            className="m-auto"
+            src={"/img/loading.gif"}
+            alt="loading"
+            width={50}
+            height={50}
+          />
+        ) : (
+          <div className="sp:hidden grow">
+            {currentItems.length !== 0 ? (
+              <table className="w-[100%] text-[14px] sp:hidden">
+                <thead>
+                  <tr>
+                    <td className="px-[35px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3] ">
+                      ニックネーム
+                    </td>
+                    <td className="px-[35px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3] ">
+                      お名前
+                    </td>
+                    <td className="px-[35px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3]">
+                      SNSの種類
+                    </td>
+                    <td className="px-[35px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3]">
+                      状態
+                    </td>
+                    <td className="px-[35px] py-[25px] bg-[#F8F9FA] border border-[#D3D3D3]">
+                      登録・申請日
+                    </td>
+                  </tr>
+                </thead>
+                <tbody>
+                  {optionedData?.map((aData, idx) => (
+                    <tr key={idx}>
+                      <td className="px-[35px] py-[25px]  border border-[#D3D3D3] hover:cursor-pointer text-[#3F8DEB] underline underline-[#3F8DEB] underline-offset-[3px]">
+                        <Link href={`/influencer/${aData.id}`}>
+                          {aData.nickName}
+                        </Link>
+                      </td>
+                      <td className="px-[35px] py-[25px]  border border-[#D3D3D3] ">
+                        {aData.influencerName}
+                      </td>
+                      <td className="px-[35px] py-[25px]  border border-[#D3D3D3]">
+                        <div className="flex flex-wrap items-center gap-[15px]">
+                          {aData.instagram && (
+                            <img
+                              className="w-[35px]"
+                              src="/img/sns/Instagram.svg"
+                              alt="instagram"
+                            />
+                          )}
+                          {aData.tiktok && (
+                            <img
+                              className="w-[35px]"
+                              src="/img/sns/tiktok.svg"
+                              alt="tiktok"
+                            />
+                          )}
+                          {aData.x && (
+                            <img
+                              className="w-[35px]"
+                              src="/img/sns/x.svg"
+                              alt="x"
+                            />
+                          )}
+                          {aData.youtube && (
+                            <img
+                              className="w-[35px]"
+                              src="/img/sns/youtube.svg"
+                              alt="youtube"
+                            />
+                          )}
+                          {aData.facebook && (
+                            <img
+                              className="w-[35px]"
+                              src="/img/sns/facebook.svg"
+                              alt="youtube"
+                            />
+                          )}
+                          {aData.otherSNS !== "" && (
+                            <span className="text-[#C0C0C0]">etc.</span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-[35px] py-[25px]  border border-[#D3D3D3]">
+                        {aData.status}
+                      </td>
+                      <td className="px-[35px] py-[25px]  border border-[#D3D3D3]">
+                        {aData.date}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <div className="text-center pt-[200px] text-title text-[#757575]">
+                表示する資料がありません。
+              </div>
+            )}
+          </div>
+        )}
+        <div className="sp:hidden">
+          <ReactPaginate
+            containerClassName="pagination-conatiner"
+            pageClassName="pagination-page"
+            activeClassName="pagination-active"
+            disabledClassName="pagination-disable"
+            previousClassName="pagination-page"
+            nextClassName="pagination-page"
+            breakLabel="..."
+            nextLabel=">"
+            onPageChange={handlePageClick}
+            pageRangeDisplayed={5}
+            pageCount={pageCount}
+            previousLabel="<"
+            renderOnZeroPageCount={null}
+          />
+        </div>
         <div className="lg:hidden">
-          {data?.map((aData, idx) => (
+          {optionedData?.map((aData, idx) => (
             <div
               key={idx}
               className=" bg-[#F8F9FA] border border-[#D3D3D3]"
@@ -201,10 +374,57 @@ export default function InfluencerListPage() {
                 <div className="p-[25px]">
                   <div className="flex">
                     <div className="w-[80px] mr-[36px] text-right text-[#A9A9A9] sp:text-spsmall">
-                      担当者名
+                      お名前
                     </div>
                     <span className="mb-[7px] sp:text-spsmall">
-                      {aData.nickName}
+                      {aData.influencerName}
+                    </span>
+                  </div>
+                  <div className="flex">
+                    <div className="w-[80px] mr-[36px] text-right text-[#A9A9A9] sp:text-spsmall">
+                      SNSの種類
+                    </div>
+                    <span className="mb-[7px] sp:text-spsmall">
+                      <div className="flex flex-wrap items-center gap-[15px]">
+                        {aData.instagram && (
+                          <img
+                            className="w-[35px]"
+                            src="/img/sns/Instagram.svg"
+                            alt="instagram"
+                          />
+                        )}
+                        {aData.tiktok && (
+                          <img
+                            className="w-[35px]"
+                            src="/img/sns/tiktok.svg"
+                            alt="tiktok"
+                          />
+                        )}
+                        {aData.x && (
+                          <img
+                            className="w-[35px]"
+                            src="/img/sns/x.svg"
+                            alt="x"
+                          />
+                        )}
+                        {aData.youtube && (
+                          <img
+                            className="w-[35px]"
+                            src="/img/sns/youtube.svg"
+                            alt="youtube"
+                          />
+                        )}
+                        {aData.facebook && (
+                          <img
+                            className="w-[35px]"
+                            src="/img/sns/facebook.svg"
+                            alt="youtube"
+                          />
+                        )}
+                        {aData.otherSNS !== "" && (
+                          <span className="text-[#C0C0C0]">etc.</span>
+                        )}
+                      </div>
                     </span>
                   </div>
                   <div className="flex">
@@ -212,26 +432,12 @@ export default function InfluencerListPage() {
                       状態
                     </div>
                     <span className="mb-[7px] sp:text-spsmall">
-                      {aData.name}
+                      {aData.status}
                     </span>
                   </div>
                   <div className="flex">
                     <div className="w-[80px] mr-[36px] text-right text-[#A9A9A9] sp:text-spsmall">
-                      決算
-                    </div>
-                    <span className="mb-[7px] sp:text-spsmall">
-                      <div className="flex gap-[15px]">
-                        <img
-                          className="w-[35px]"
-                          src="/img/sns/Instagram.svg"
-                          alt="instagram"
-                        />
-                      </div>
-                    </span>
-                  </div>
-                  <div className="flex">
-                    <div className="w-[80px] mr-[36px] text-right text-[#A9A9A9] sp:text-spsmall">
-                      登録日
+                      登録・申請日
                     </div>
                     <span className="mb-[7px] sp:text-spsmall">
                       {aData.date}
@@ -241,20 +447,21 @@ export default function InfluencerListPage() {
               )}
             </div>
           ))}
-        </div>
-        <div className="flex mt-[30px] justify-center">
-          {/* <div className="border border-[#D3D3D3] w-[34px] py-[5px] text-center">
-            &lt;
-          </div>
-          <div className="bg-[#A9A9A9] text-[white] w-[34px] py-[5px]  text-center">
-            1
-          </div>
-          <div className="border border-[#D3D3D3] w-[34px] py-[5px]  text-center">
-            2
-          </div>
-          <div className="border border-[#D3D3D3] w-[34px] py-[5px]  text-center">
-            &gt;
-          </div> */}
+          <ReactPaginate
+            containerClassName="pagination-conatiner"
+            pageClassName="pagination-page"
+            activeClassName="pagination-active"
+            disabledClassName="pagination-disable"
+            previousClassName="pagination-page"
+            nextClassName="pagination-page"
+            breakLabel="..."
+            nextLabel=">"
+            onPageChange={handlePageClick}
+            pageRangeDisplayed={5}
+            pageCount={pageCount}
+            previousLabel="<"
+            renderOnZeroPageCount={null}
+          />
         </div>
       </div>
     </div>

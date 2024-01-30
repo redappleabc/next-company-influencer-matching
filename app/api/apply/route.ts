@@ -59,7 +59,10 @@ export async function GET(request: NextRequest) {
       FROM apply
       LEFT JOIN cases ON apply.caseId = cases.id
       LEFT JOIN company ON cases.companyId = company.id
-      ORDER BY apply.id DESC`;
+      WHERE apply.influencerId = ${id}
+      ORDER BY apply.id DESC
+      `;
+
     const rows = await executeQuery(query).catch((e) => {
       return NextResponse.json({ type: "error" });
     });

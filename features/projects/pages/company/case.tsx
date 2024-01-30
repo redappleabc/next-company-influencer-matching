@@ -404,6 +404,7 @@ const CasePage: React.FC = () => {
       <div className="flex justify-center mt-[36px] mb-[160px] sp:mb-[60px]">
         {determineEditable() && [
           <Button
+            key={"1"}
             buttonType={ButtonType.PRIMARY}
             buttonClassName="mr-[30px]"
             handleClick={() => handleRequest(false)}
@@ -418,6 +419,7 @@ const CasePage: React.FC = () => {
             </span>
           </Button>,
           <Button
+            key={"2"}
             buttonType={ButtonType.DANGER}
             buttonClassName="mr-[30px]"
             handleClick={() => handleRequest(true)}
