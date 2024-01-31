@@ -26,6 +26,16 @@ export default function ApplyPage() {
     setIsLoading(true);
     const result = await axios.put("api/user", { email, type });
     if (result.data.type === "success") {
+      await axios.post("/api/sendEmail", {
+        to: email,
+        subject: "申し込みを受け付けました。",
+        content: `サービスにお申し込みいただきありがとうございます。
+          \n 登録を続行するには、以下のリンクをご覧ください。
+          \nhttp://localhost:3000/applyCompany
+          \n登録後、以下のパスワードでログインできます。
+          \n${result.data.password}
+          `,
+      });
       router.push("/applyConfirm");
     }
     setIsLoading(false);

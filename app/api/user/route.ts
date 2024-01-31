@@ -29,10 +29,9 @@ export async function PUT(request: NextRequest) {
   try {
     const { email, type } = await request.json();
     const randomString = generateRandomString();
-    const forTestString = "12345";
     await executeQuery(`
       INSERT INTO users (email,password ,role)
-      VALUES ('${email}','${forTestString}','${type}')
+      VALUES ('${email}','${randomString}','${type}')
       `);
     return NextResponse.json({
       type: "success",

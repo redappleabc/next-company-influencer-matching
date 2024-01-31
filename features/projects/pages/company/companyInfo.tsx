@@ -102,6 +102,15 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
     if (isApply) {
       const res = await axios.post(`api/company`, data);
       if (res.data.type === "success") {
+        await axios.post("/api/sendEmail", {
+          to: data.emailAddress,
+          subject: "企業登録が成功しました。",
+          content: `企業登録が成功しました。
+            \n 以降、サービスを利用することができます。
+            \nログインするには以下のリンクをご覧ください。
+            \nhttp://localhost:3000
+            `,
+        });
         router.push("/applyConfirm");
       }
     }

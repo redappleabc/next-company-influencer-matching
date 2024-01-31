@@ -162,6 +162,15 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
     if (applyMode) {
       result = await axios.post("api/influencer", body);
       if (result.data.type === "success") {
+        await axios.post("/api/sendEmail", {
+          to: data.emailAddress,
+          subject: "インフルエンサー登録が成功しました。",
+          content: `インフルエンサー登録が成功しました。
+            \n 以降、サービスを利用することができます。
+            \nログインするには以下のリンクをご覧ください。
+            \nhttp://localhost:3000
+            `,
+        });
         router.replace("applyConfirm");
       }
     } else {

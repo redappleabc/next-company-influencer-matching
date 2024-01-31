@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@sendgrid/mail": "^8.1.0",
     "axios": "^1.6.5",
     "mysql": "^2.18.1",
     "next": "14.0.4",

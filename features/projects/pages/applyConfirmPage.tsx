@@ -21,7 +21,7 @@ export default function ResetPasswordPage() {
           <br />
         </div>
 
-        <Link href={"/login"}>
+        <Link href={"/ask"}>
           <div className="text-center mb-[10px]">
             <Button buttonType={ButtonType.PRIMARY}>
               お問い合わせはこちら
