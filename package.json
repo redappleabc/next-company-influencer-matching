@@ -9,9 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@sendgrid/mail": "^8.1.0",
     "axios": "^1.6.5",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.1",
+    "install": "^0.13.0",
     "mysql": "^2.18.1",
     "next": "14.0.4",
+    "npm": "^10.4.0",
     "react": "^18",
     "react-dom": "^18",
     "react-paginate": "^8.2.0",

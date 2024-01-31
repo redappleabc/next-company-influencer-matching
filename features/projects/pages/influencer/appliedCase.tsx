@@ -23,6 +23,7 @@ export default function AppledCase() {
   const [options, setOptions] = useState([]);
   const [options1, setOptions1] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [reload, setReload] = useState(false);
 
   const [itemOffset, setItemOffset] = useState(0);
   const itemsPerPage = 10;
@@ -49,7 +50,16 @@ export default function AppledCase() {
       setIsLoading(false);
     };
     if (user) fetchData();
-  }, []);
+  }, [reload]);
+  const handleEndReport = async (id) => {
+    const result = await axios.put(`/api/apply`, {
+      status: "完了報告",
+      id,
+    });
+    if (result.data.type === "success") {
+      setReload(!reload);
+    }
+  };
   const makeOptioinedData = (visibleData, result, result1) => {
     let resultData = [];
     if (result.length === 0) {
@@ -277,12 +287,15 @@ export default function AppledCase() {
                         />
                       </td>
                       <td className="px-[15px] py-[25px]  border border-[#D3D3D3] text-center">
-                        {aData.status === "完了" ? (
+                        {aData.status === "完了報告" ? (
                           <div className="text-white bg-[#236997] p-[10px] m-[5px] rounded-lg shadow-sm">
                             完了した
                           </div>
                         ) : (
-                          <Button buttonType={ButtonType.PRIMARY}>
+                          <Button
+                            handleClick={() => handleEndReport(aData.id)}
+                            buttonType={ButtonType.PRIMARY}
+                          >
                             <span className="text-small">完了報告</span>
                           </Button>
                         )}

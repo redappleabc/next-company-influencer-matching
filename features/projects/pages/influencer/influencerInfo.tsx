@@ -100,7 +100,6 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
       if (result.data) {
         setData(result.data);
         setGenre(result.data.genre);
-        setIsLoading(false);
       }
     };
     if (!applyMode && authUser) fetchData();
@@ -163,7 +162,16 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
     if (applyMode) {
       result = await axios.post("api/influencer", body);
       if (result.data.type === "success") {
-        router.replace("applyConfirm");
+        await axios.post("/api/sendEmail", {
+          to: data.emailAddress,
+          subject: "インフルエンサー登録が成功しました。",
+          content: `インフルエンサー登録が成功しました。
+            \n 以降、サービスを利用することができます。
+            \nログインするには以下のリンクをご覧ください。
+            \nhttp://localhost:3000
+            `,
+        });
+        router.replace("/applyComplete");
       }
     } else {
       result = await axios.put("api/influencer", body);

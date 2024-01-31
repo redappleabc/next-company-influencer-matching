@@ -27,6 +27,7 @@ const InfluencerPage: React.FC<InfluencerProps> = ({
     setData(influencerData);
   }, [influencerData]);
   const handleUpdate = async () => {
+    const isStateUpdated = data.hasOwnProperty("status");
     const result = await axios.put("/api/influencer", data);
     if (result.data) {
       setShowConfirm(true);
