@@ -47,7 +47,7 @@ export async function PUT(request: NextRequest) {
     const salt = bcrypt.genSaltSync(saltRounds);
     await executeQuery(`
       INSERT INTO users (email,password ,role)
-      VALUES ('${email}','${randomString}','${type}')
+      VALUES ('${email}','${"12345"}','${type}')
       `);
     return NextResponse.json({
       type: "success",
@@ -58,7 +58,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ type: "error" });
   }
 }
-function generateRandomString() {
+export function generateRandomString() {
   const length = 10;
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

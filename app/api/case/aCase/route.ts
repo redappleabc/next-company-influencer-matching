@@ -4,7 +4,7 @@ import { executeQuery } from "../../util/db";
 export async function GET(request: NextRequest) {
   try {
     const id = request.nextUrl.searchParams.get("id") || "";
-    const query = `SELECT cases.*, company.companyName
+    const query = `SELECT cases.*, company.companyName, company.emailAddress, company.representativeName
       FROM cases
       LEFT JOIN company ON cases.companyId=company.id 
       where cases.id = ${id}

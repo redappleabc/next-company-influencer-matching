@@ -103,12 +103,53 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
       const res = await axios.post(`api/company`, data);
       if (res.data.type === "success") {
         await axios.post("/api/sendEmail", {
+          from: data.emailAddress,
+          subject: "【インフルエンサーめぐり】登録がありました",
+          content: `インフルエンサーめぐりに登録がありました。
+            \n
+            \n---------------------------------------------
+            \n ▼登録情報
+            \n企業名          ：${data.companyName}
+            \n企業名カナ      ：${data.companyNameGana}
+            \n代表者名        ：${data.representativeName}
+            \n代表者名カナ    ：${data.representativeName}
+            \n担当者名        ：${data.responsibleName}
+            \n担当者名カナ    ：${data.responsibleNameGana}
+            \nWEBサイト       ：${data.webSite}
+            \n電話番号        ：${data.phoneNumber}
+            \nメールアドレス   ：${data.emailAddress}
+            \n郵便番号         ：${data.postalCode}
+            \n住所             ：${data.address} ${
+            data.building ? data.building : ""
+          }
+            \n
+            \n-----------------------------------------------------
+            `,
+        });
+        await axios.post("/api/sendEmail", {
           to: data.emailAddress,
-          subject: "企業登録が成功しました。",
-          content: `企業登録が成功しました。
-            \n 以降、サービスを利用することができます。
-            \nログインするには以下のリンクをご覧ください。
+          subject: "【インフルエンサーめぐり】ご登録ありがとうございます",
+          content: `${data.responsibleName} 様
+            \n
+            \n インフルエンサーめぐりにご登録いただきありがとうございます。
+            \nログインしてサービスをご利用ください。
+            \n
+            \n---------------------------------------------
+            \n▼アカウント情報
+            \nログインURL：
             \nhttp://localhost:3000
+            \nID：
+            \n${data.emailAddress}
+            \nパスワード：
+            \n${res.data.password}
+            \n
+            \n---------------------------------------------
+            \nログイン後に決済手続きをお願いします。
+            \n決済完了後にサービスのご利用ができます。
+            \n
+            \n-----------------------------------------------------
+            \n不明点がございましたらお問い合わせフォームよりご連絡ください。
+            \nhttp://localhost:3000/ask
             `,
         });
         router.push("/applyComplete");

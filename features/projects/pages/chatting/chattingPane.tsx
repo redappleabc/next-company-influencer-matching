@@ -15,6 +15,7 @@ import ChattingRooms from "./rooms";
 export default function ChattingPane() {
   const user = useRecoilValue(authUserState);
   const [data, setData] = useState([]);
+  const [roomData, setRoomData] = useState(null);
   const [reload, setReload] = useState(false);
   const [showRooms, setShowRooms] = useState(false);
   const [reset, setReset] = useState(false);
@@ -31,17 +32,62 @@ export default function ChattingPane() {
         setData(result.data);
       }
     };
+    const fetchRoomData = async () => {
+      const result = await axios.get(`/api/chatting/chattingRoom?id=${id}`);
+      if (result.data) {
+        setRoomData(result.data);
+      }
+    };
     fetchData();
+    fetchRoomData();
   }, [reload]);
   useEffect(() => {
     const pane = document.getElementById("pane");
     pane.scrollTop = pane.scrollHeight;
   }, [data]);
-  const handleSendMsg = () => {
+  const handleSendMsg = async () => {
     if (msg === "") {
       return;
     }
     setMsg("");
+    if (user.user.role === "企業") {
+      await axios.post("/api/sendEmail", {
+        to: roomData?.infEmail,
+        subject: "【【インフルエンサーめぐり】チャットが届きました",
+        content: `${roomData?.influencerName} 様。
+          \n いつもインフルエンサーめぐりをご利用いただきありがとうございます。
+          \n以下の案件からチャットが届いてます。
+          \nログインしてご確認をお願いします。
+          \n
+          \n企業名：${roomData?.companyName}
+          \n案件名：${roomData?.caseName}
+          \nURL ：https://localhost:3000/chattingInf/${id}
+          \n
+          \n-----------------------------------------------------
+          \n 不明点がございましたらお問い合わせフォームよりご連絡ください。
+          \n http://localhost:3000/ask。
+          `,
+      });
+    }
+    if (user.user.role !== "企業") {
+      await axios.post("/api/sendEmail", {
+        to: roomData?.companyEmail,
+        subject: "【インフルエンサーめぐり】チャットが届きました",
+        content: `${roomData?.representativeName} 様。
+          \n いつもインフルエンサーめぐりをご利用いただきありがとうございます。
+          \n以下の案件でチャットが届いてます。
+          \nログインしてご確認をお願いします。
+          \n
+          \n案件名：${roomData?.caseName}
+          \nインフルエンサー名：${roomData?.influencerName}
+          \nURL ：https://localhost:3000/chatting/${id}
+          \n
+          \n-----------------------------------------------------
+          \n 不明点がございましたらお問い合わせフォームよりご連絡ください。
+          \n http://localhost:3000/ask。
+          `,
+      });
+    }
     socket.emit("message", { roomId: id, userId: user.user.id, msg });
     setReset(!reset);
   };

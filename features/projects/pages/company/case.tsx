@@ -32,6 +32,7 @@ const CasePage: React.FC = () => {
 
   const router = useRouter();
   const user = getUser();
+
   const [wantedSNS, setWantedSNS] = useState([]);
   const [error, setError] = useState("");
   const { id } = useParams();
@@ -121,6 +122,27 @@ const CasePage: React.FC = () => {
           const result = await axios.post("/api/case", {
             ...body,
             status: "申請中",
+          });
+          await axios.post("/api/sendEmail", {
+            to: user.user?.email,
+            subject: "【インフルエンサーめぐり】募集案件の登録申請をしました",
+            content: `${user.user?.name} 様
+          \nいつもインフルエンサーめぐりをご利用いただきありがとうございます。
+          \n
+          \n募集案件の登録申請を受け付けました。
+          \n申請確認を確認しますのでしばらくお待ちください。
+          \n-----------------------------------------------------
+          \n 不明点がございましたらお問い合わせフォームよりご連絡ください。
+          \n http://localhost:3000/ask。
+          `,
+          });
+          await axios.post("/api/sendEmail", {
+            from: user.user?.email,
+            subject: "【インフルエンサーめぐり】募集案件の登録申請がありました",
+            content: `募集案件の登録申請がありました。
+          \nログインして確認してください。
+          \n
+          `,
           });
           setError("");
           router.replace("/appliedList");

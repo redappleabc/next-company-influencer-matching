@@ -142,12 +142,41 @@ export default function CaseDetailPage({ caseProps }: caseData) {
     }
   };
   const handleApprove = async (val: string, cur: number) => {
+    // 承認 否決
     const id = cur ? cur : currentApply;
     const result = await axios.put(`/api/apply`, {
       status: val,
       id,
     });
     if (result.data.type === "success") {
+      if (val === "否決")
+        await axios.post("/api/sendEmail", {
+          to: influencerData?.emailAddress,
+          subject: "【インフルエンサーめぐり】応募案件で否認されました",
+          content: `${influencerData?.influencerName} 様
+          \n いつもインフルエンサーめぐりをご利用いただきありがとうございます。
+          \nご応募いただいた「 ${caseData?.caseName} 」で否認されました。
+          \nご期待に沿えない結果となってしまい、申し訳ございません。
+          \nまたの機会がございましたら、よろしくお願いいたします。
+          
+          \n-----------------------------------------------------
+          \n 不明点がございましたらお問い合わせフォームよりご連絡ください。
+          \n http://localhost:3000/ask。
+          `,
+        });
+      if (val === "承認")
+        await axios.post("/api/sendEmail", {
+          to: influencerData?.emailAddress,
+          subject: "【インフルエンサーめぐり】応募案件で承認されました",
+          content: `${influencerData?.influencerName} 様
+          \n いつもインフルエンサーめぐりをご利用いただきありがとうございます。
+          \nご応募いただいた「 ${caseData?.caseName} 」で承認されましたのでログインしてご確認ください。
+          \n
+          \n-----------------------------------------------------
+          \n 不明点がございましたらお問い合わせフォームよりご連絡ください。
+          \n http://localhost:3000/ask。
+          `,
+        });
       setShowInfluencer(false);
       setConfirmMsg("操作が成功しました。");
       setShowConfirm(true);
