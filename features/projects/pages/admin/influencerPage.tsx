@@ -26,10 +26,61 @@ const InfluencerPage: React.FC<InfluencerProps> = ({
   useEffect(() => {
     setData(influencerData);
   }, [influencerData]);
-  const handleUpdate = async () => {
-    const isStateUpdated = data.hasOwnProperty("status");
-    const result = await axios.put("/api/influencer", data);
+  const handleUpdate = async (status) => {
+    let update = data;
+    if (status) {
+      update = { ...data, status: status };
+    }
+
+    const result = await axios.put("/api/influencer", update);
     if (result.data) {
+      if (status) {
+        let content = "";
+        let subject = "";
+        if (status === "否認") {
+          content = `
+        ${data?.influencerName}様
+        \nインフルエンサーめぐりに申請いただきありがとうございました。
+        \n大変恐縮ですが、
+        \n今回は登録を見送らせていただくこととなりました。
+        \nご期待に沿えない結果となってしまい、申し訳ございません。
+        \n
+        \nまたの機会がございましたら、よろしくお願いいたします。
+        \n
+        \n-----------------------------------------------------
+        \n不明点がございましたらお問い合わせフォームよりご連絡ください。
+        \nhttp://localhost:3000/ask
+
+        `;
+          subject = "【インフルエンサーめぐり】申請ありがとうございました";
+        }
+        if (status === "稼働中") {
+          content = `
+        ${data?.influencerName}様
+        \nインフルエンサーめぐりに申請いただきありがとうございました。
+        \n登録が完了しましたのでログインしてサービスをご利用ください。
+        \n
+        \n-----------------------------------------------------
+        \n▼アカウント情報
+        \nログインURL：
+        \nhttp://localhost:3000/login
+        \n
+        \nID:
+        \n${data?.emailAddress}
+        \nパスワード：
+        \nパスワード：
+        \n-----------------------------------------------------
+        \n不明点がございましたらお問い合わせフォームよりご連絡ください。
+        \nhttp://localhost:3000/ask
+        `;
+          subject = "【インフルエンサーめぐり】登録が完了しました";
+        }
+        await axios.post("/api/sendEmail", {
+          to: data?.emailAddress,
+          subject: subject,
+          content: content,
+        });
+      }
       setShowConfirm(true);
     }
   };
@@ -51,8 +102,8 @@ const InfluencerPage: React.FC<InfluencerProps> = ({
       >
         <Modal
           body={confirmMsg}
-          onOk={() => setShowConfirm(false)}
-          onCancel={() => setShowConfirm(false)}
+          onOk={() => router.back()}
+          onCancel={() => router.back()}
         />
       </div>
       {!modalMode && (
@@ -122,7 +173,7 @@ const InfluencerPage: React.FC<InfluencerProps> = ({
         <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
           <span>メールアドレス</span>
         </span>
-        {modalMode ? (
+        {modalMode || data?.status === "承認待ち" ? (
           <span>{data?.emailAddress}</span>
         ) : (
           <Input
@@ -288,7 +339,7 @@ const InfluencerPage: React.FC<InfluencerProps> = ({
           <div>2023/01/01 11:11</div>
         </div>
       )}
-      {!modalMode && (
+      {!modalMode && data?.status !== "承認待ち" && (
         <div className="flex items-center py-[15px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
           <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
             <span>状態</span>
@@ -298,18 +349,25 @@ const InfluencerPage: React.FC<InfluencerProps> = ({
             value={data?.status}
             selectClassName="w-[138px] border-[#D3D3D3]"
           >
-            <option>承認待ち</option>
             <option>稼動中</option>
             <option>停止中</option>
           </Select>
         </div>
       )}
+      {!modalMode && data?.status === "承認待ち" && (
+        <div className="flex items-center py-[15px] w-[50%] sp:w-full m-auto border-b-[1px] border-[#DDDDDD]   sp:px-[18px]">
+          <span className="w-[35%] sp:w-[100px] flex justify-end sp:justify-start  mr-[67px]">
+            <span>状態</span>
+          </span>
+          <span>{data?.status}</span>
+        </div>
+      )}
 
-      {!modalMode && (
+      {!modalMode && data?.status !== "承認待ち" && (
         <div className="flex justify-center mt-[36px] mb-[160px] sp:mb-[60px]">
           <Button
             buttonType={ButtonType.PRIMARY}
-            handleClick={handleUpdate}
+            handleClick={() => handleUpdate(data?.status)}
             buttonClassName="mr-[30px]"
           >
             <span className="flex items-center">
@@ -325,6 +383,41 @@ const InfluencerPage: React.FC<InfluencerProps> = ({
             handleClick={() => {
               router.back();
             }}
+            buttonType={ButtonType.DEFAULT}
+            buttonClassName="rounded-[5px]"
+          >
+            戻る
+          </Button>
+        </div>
+      )}
+      {!modalMode && data?.status === "承認待ち" && (
+        <div className="flex justify-center mt-[45px] mb-[160px] sp:mb-[60px]">
+          <Button
+            buttonType={ButtonType.PRIMARY}
+            handleClick={() => {
+              // setData({ ...data, status: "稼働中" });
+              handleUpdate("稼働中");
+            }}
+            buttonClassName="mr-[30px]"
+          >
+            <span className="flex items-center">
+              <span>承認</span>
+            </span>
+          </Button>
+          <Button
+            buttonType={ButtonType.DANGER}
+            handleClick={() => {
+              // setData({ ...data, status: "稼働中" });
+              handleUpdate("否認");
+            }}
+            buttonClassName="mr-[30px]"
+          >
+            <span className="flex items-center">
+              <span>否認</span>
+            </span>
+          </Button>
+          <Button
+            handleClick={() => router.back()}
             buttonType={ButtonType.DEFAULT}
             buttonClassName="rounded-[5px]"
           >

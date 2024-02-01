@@ -86,8 +86,19 @@ export async function PUT(request: NextRequest) {
     query = query.slice(0, -2);
     query += " ";
     query += `WHERE id = ${body.id}`;
-    executeQuery(query);
-    return NextResponse.json({ type: "success" });
+    await executeQuery(query);
+    let query1 = `SELECT apply.*,cases.caseName,influencer.influencerName,company.representativeName,company.emailAddress
+    FROM apply
+    LEFT JOIN cases ON apply.caseId = cases.id
+    LEFT JOIN company ON cases.companyId = company.id
+    LEFT JOIN influencer ON apply.influencerId = influencer.id
+    `;
+    const rows = await executeQuery(query1).catch((e) => {
+      return NextResponse.json({ type: "error" });
+    });
+    if (rows.length) {
+      return NextResponse.json({ type: "success", data: rows[0] });
+    }
   } catch (error) {
     console.error("Error fetching data:", error);
     return NextResponse.json({ type: "error" });

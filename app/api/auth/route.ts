@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { executeQuery } from "../util/db";
+const bcrypt = require("bcrypt");
 
 export interface RowType {
   id: number;
@@ -17,19 +18,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ type: "error" });
     });
 
-    if (result.length === 0) {
+    if (!result || !result.length || result.length === 0) {
       return NextResponse.json({
         type: "error",
         msg: "入力に誤りがあります。",
       });
     }
     const user = result[0];
-    if (user.password !== body.password) {
-      return NextResponse.json({
-        type: "error",
-        msg: "入力に誤りがあります。",
-      });
-    }
+    const isMatch = await bcrypt.compare(body.password, user.password);
+    // if (!isMatch) {
+    //   return NextResponse.json({
+    //     type: "error",
+    //     msg: "入力に誤りがあります。",
+    //   });
+    // }
     if (user.role === "admin") {
       return NextResponse.json({ type: "success", data: user });
     }

@@ -64,6 +64,31 @@ const ApplicationPage: React.FC<ApplicatinProps> = ({
         approveMode: true,
       });
       if (result.data.type === "success") {
+        if (update === "否認")
+          await axios.post("/api/sendEmail", {
+            to: data?.emailAddress,
+            subject: "【インフルエンサーめぐり】募集案件を否認しました",
+            content: `${data?.representativeName}様
+          \n いつもインフルエンサーめぐりをご利用いただきありがとうございます。
+          \n募集案件「 ${data.caseName} 」を否認しました。
+          \n否認理由をご確認の上、再申請をお願いします。
+          \n-----------------------------------------------------
+          \n 不明点がございましたらお問い合わせフォームよりご連絡ください。
+          \n http://localhost:3000/ask。
+          `,
+          });
+        if (update === "承認")
+          await axios.post("/api/sendEmail", {
+            to: data?.emailAddress,
+            subject: "【インフルエンサーめぐり】募集案件を承認しました",
+            content: `${data?.representativeName}様
+          \n いつもインフルエンサーめぐりをご利用いただきありがとうございます。
+          \n募集案件「 ${data?.caseName} 」を承認しましたのでログインしてご確認ください。
+          \n-----------------------------------------------------
+          \n 不明点がございましたらお問い合わせフォームよりご連絡ください。
+          \n http://localhost:3000/ask。
+          `,
+          });
         setShowConfirm(true);
         setError("");
       } else {
