@@ -33,10 +33,12 @@ export default function ApplyPage() {
           \n 登録を続行するには、以下のリンクをご覧ください。
           \nhttp://localhost:3000/applyCompany
           \n登録後、以下のパスワードでログインできます。
-          \n${result.data.password}
+          \n${result.data.data.password}
           `,
       });
       router.push("/applyConfirm");
+    } else {
+      if (result.data.msg) setError(result.data.msg);
     }
     setIsLoading(false);
   };

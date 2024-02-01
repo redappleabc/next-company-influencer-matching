@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import sgMail from "@sendgrid/mail";
-import { API_KEY, ADMIN_EMAIL } from "./contig";
 
-sgMail.setApiKey(API_KEY);
+sgMail.setApiKey(process.env.API_KEY as string);
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+console.log(ADMIN_EMAIL);
 
 export async function POST(request: NextRequest) {
   try {

@@ -111,7 +111,7 @@ const CompanyInfoPage: React.FC<CompanyInfoProps> = ({
             \nhttp://localhost:3000
             `,
         });
-        router.push("/applyConfirm");
+        router.push("/applyComplete");
       }
     }
     if (!isApply) {

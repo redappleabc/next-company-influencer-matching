@@ -171,7 +171,7 @@ const InfluencerInfoPage: React.FC<InfluencerInfoProps> = ({
             \nhttp://localhost:3000
             `,
         });
-        router.replace("applyConfirm");
+        router.replace("/applyComplete");
       }
     } else {
       result = await axios.put("api/influencer", body);
